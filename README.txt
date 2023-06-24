@@ -1,11 +1,15 @@
+I find that it's easier to organise this README in a
+"question-answer" format. Questions are marked with "Q:", and answers
+with "A:".
+
 Q: Who are you?
 A: I am Alexander Arkhipov, a Unix hacker from Moscow.
 
-Q: How do I contact you?
+Q: How can I contact you?
 A: finger arkhipov@alearx.org | grep -o 'Login: [^ ]*' |
    sed 's/Login: \(.*\)/\1@alearx.org/'
 
-   You can use this string for both finger(1) and mail.
+   You can use the output for both finger(1) and mail.
 
 Q: Do you have a PGP key?
 A: Yes, it's at ftp://alearx.org/pub/pgp/ -- pick the latest one.
@@ -29,6 +33,12 @@ A: Russian is my native language, but I speak English fluently. I
 Q: Do you maintain any "public" accounts elsewhere?
 A: I am called alearkh on github. The rest that you might be able to
    see either exist for stupid reason, or not needed anymore.
+
+Q: What's up with news/* filenames?
+A: The oldest file is called 9999.YYYY-mm-dd, and the latter ones
+   reduce the first number by one. This way they can be sorted
+   alphabetically, and I am very unlikely to ever run out of
+   numbers (and even if I do, I can archive them and restart).
 
 Q: What's up with your domain names?
 A: I got my first domain name, and started my first open-source
