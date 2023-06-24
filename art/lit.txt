@@ -93,4 +93,5 @@ some other pages it suggested, and it all "clicked" immediately.
 Important things modern Unices fail to mention.
 
 
+Copyright (c) 2023 Alexander Arkhipov <aa@alearx.org>
 Licensed under CC BY (https://creativecommons.org/licenses/by/4.0)

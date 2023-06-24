@@ -388,4 +388,5 @@ most unlike other games, which rather only divide data, state and
 logic.
 
 
+Copyright (c) 2023 Alexander Arkhipov <aa@alearx.org>
 Licensed under CC BY (https://creativecommons.org/licenses/by/4.0)

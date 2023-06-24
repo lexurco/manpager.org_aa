@@ -100,4 +100,5 @@ the normal one, or the one inside Xephyr), and pasting it in the
 other -- you should fail!
 
 
+Copyright (c) 2023 Alexander Arkhipov <aa@alearx.org>
 Licensed under CC BY (https://creativecommons.org/licenses/by/4.0)

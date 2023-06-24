@@ -85,4 +85,5 @@ the animations, so well done there. Other than that, however, I found
 the games to be pretty average.
 
 
+Copyright (c) 2023 Alexander Arkhipov <aa@alearx.org>
 Licensed under CC BY (https://creativecommons.org/licenses/by/4.0)

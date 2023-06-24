@@ -101,4 +101,5 @@ than they should be, but only some of that is of immediate
 importance. The rest can be referenced as needed.
 
 
+Copyright (c) 2023 Alexander Arkhipov <aa@alearx.org>
 Licensed under CC BY (https://creativecommons.org/licenses/by/4.0)
