@@ -436,3 +436,6 @@ She writhes in the dirt as the agony of death taunts her.
 She has stopped moving.
 
 You win!
+
+
+Licensed under CC BY (https://creativecommons.org/licenses/by/4.0)

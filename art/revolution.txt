@@ -83,3 +83,6 @@ find more problems with the game's puzzles than I did, which is as
 much as can be said for the gameplay. They did make some good work on
 the animations, so well done there. Other than that, however, I found
 the games to be pretty average.
+
+
+Licensed under CC BY (https://creativecommons.org/licenses/by/4.0)

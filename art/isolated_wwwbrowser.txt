@@ -98,3 +98,6 @@ xterm, and you can use xterm to launch firefox. To see how well
 things are isolated, try copying some text in one X session (either
 the normal one, or the one inside Xephyr), and pasting it in the
 other -- you should fail!
+
+
+Licensed under CC BY (https://creativecommons.org/licenses/by/4.0)

@@ -79,3 +79,6 @@ otherwise). If not starting X at all, then executing it from
 ~/.profile or similar file is even simpler.
 
 [comic] https://xkcd.com/936/
+
+
+Licensed under CC BY (https://creativecommons.org/licenses/by/4.0)

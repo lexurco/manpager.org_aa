@@ -91,3 +91,6 @@ some other pages it suggested, and it all "clicked" immediately.
 - /usr/share/doc directory in 4.4BSD-lite2 (and earlier) -
 
 Important things modern Unices fail to mention.
+
+
+Licensed under CC BY (https://creativecommons.org/licenses/by/4.0)

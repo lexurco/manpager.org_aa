@@ -366,3 +366,6 @@ to.
 REFERENCES
 
 [fallout2-ce] https://github.com/alexbatalov/fallout2-ce
+
+
+Licensed under CC BY (https://creativecommons.org/licenses/by/4.0)

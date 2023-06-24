@@ -386,3 +386,6 @@ of a line indents it by one extra level. An interesting part here is
 that the game has quite clearly defined back- and front-end, which is
 most unlike other games, which rather only divide data, state and
 logic.
+
+
+Licensed under CC BY (https://creativecommons.org/licenses/by/4.0)

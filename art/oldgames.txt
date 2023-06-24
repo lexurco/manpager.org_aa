@@ -249,3 +249,6 @@ like. And shooting is by far the worst of the three chief activities!
 REFERENCES
 
 [free] gopher://manpager.net/0/art/free.txt
+
+
+Licensed under CC BY (https://creativecommons.org/licenses/by/4.0)
