@@ -16,14 +16,16 @@ A: Yes, it's at ftp://alearx.org/pub/pgp/ -- pick the latest one.
    The pub directory is also mirrored on http and gopher.
 
 Q: What services does alearx.org provide?
-A: Most services are at alearx.org. There is a mail server running,
-   so you can send me mail to this server. I publish news via finger
-   and you can read them via http and gopher as well. I publish some
-   files to the ftp server, and the pub directory is mirrored to http
-   and gopher. There are the http and gopher sites, which are mostly
+A: Most services are at alearx.org.
+
+   There is a mail server running. I publish news via finger (but
+   also http and gopher). I publish some files to the ftp server (but
+   also http and gopher). The http and gopher sites are almost
    identical. You can clone my git repositories via anongit (see the
-   /git/ directory on either www or gopher site). I also maintain a
-   boring site with a blog and a resume at pro.alearx.org.
+   /git/ directory on www or gopher site).
+   
+   I also maintain a boring site with a blog and a resume at
+   pro.alearx.org.
 
 Q: What language(s) do you speak?
 A: Russian is my native language, but I speak English fluently. I
@@ -124,3 +126,7 @@ A: When I first began programming, I was perplexed by copyright.
    Now I believe that some of the text files I publish via gopher may
    be subjects of copyright, so I now also have a small notice at the
    bottom of such files.
+
+Q: What sort of Unix do you run?
+A: Mostly OpenBSD, though I'd like to get Linux on a separate
+   machine.
