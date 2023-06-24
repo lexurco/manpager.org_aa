@@ -1,0 +1,85 @@
+Revolution Software has made a few interesting games, some of which
+I played. I think I might have played Broken Sword once as a child,
+but more thoroughly I familiarised myself with them only much later
+beginning a bit before I started writing my bachelor's diploma and
+ending some time later (I think at least). My recollections of them
+are a bit hazy now that some months have passed, but I'll try to give
+at least a brief overview of my thoughts about the games.
+
+So, what's so interesting about these games? Well, not they
+themselves: I found them to be rather forgettable, actually. What's
+more interesting is that four of them: Lure of the Temptress, Beneath
+a Steel Sky & Broken Sword 1 & 2 can be played via ScummVM, which is
+an open-source engine for many adventure games. More interestingly,
+the first two (not "Swords" unfortunately) have their data files
+distributed gratis for non-commercial purposes as well. It's a shame
+the original engines never got open-sourced, but from the other angle
+this can be viewed as "better than Doom", which still can't be played
+without either buying the necessary data, or sharing it.
+
+As for the reason why they are so forgettable, consider that there
+are generally two types of games: the more classical ones not unlike
+adventure(6) itself, which give the player some game rules and set
+him loose to figure it all out for himself, and the games which try
+to be films. Most of the latter adventure-games, including the ones
+by Revolution are in the latter category. I very rarely watch films,
+and when I do it's mostly Monty Python or something. The reason is
+that unlike books or any "interactive" activities films do not
+require intellectual involvement, instead they promote staleness of
+the mind: they are very much like sleeping without actually getting
+the benefits of doing so. The "game-films" are slightly better in
+this aspect, as they do require at least some involvement from the
+player. Furthermore the "adventure-games" are even better off in this
+aspect, as the player is usually required to perform some creative
+thinking in order to solve the game's puzzles, rather than to do
+something mechanical. Still, the majority of it has been arranged by
+the "director" and the player is the "audience".
+
+Oh, well, here go the games themselves.
+
+
+LURE OF THE TEMPTRESS
+
+I don't really think much of this game and the reasons I dislike it
+seem to align exactly with the features it was marketed for, which is
+hilarious.
+
+So, firstly, almost none of the characters ever remain in a
+predictable position, instead they go around the entire map in a
+randomised manner. This makes it an unnecessarily hard job to find
+the one, which has to be talked to in order to progress the
+storyline. This is worsened further by the fact that at times the
+player is not given so much as a clue on what to do next, and so he
+has to talk to every character in the game in order to find out. That
+last deficiency is also combined with the fact several times
+throughout the game things simply happen without the player being
+given a hint, like a door that was closed the majority of the time
+suddenly opening for no reason in particular.
+
+My last grudge is the UI. "Temptress" was one of the earliest games
+to use an entirely mouse-based interface, yet just like all those
+graphical file-managers it did so relying on the textual idioms.
+Basically the player often has to find-and-click a single verb from
+a couple dozen and then do the same with nouns. The vast majority are
+quite simply unused.
+
+Oh, well, I suppose the characters and graphics are charming.
+
+
+BENEATH A STEEL SKY
+
+Now, this is a much better game. I'll say as much: of all the
+adventure games I've played only this one made any sense. Clues are
+simple enough to come by and the solution that follows mostly makes
+sense. Things don't just happen off-screen and there aren't many
+one-off mechanics. Very solid.
+
+
+BROKEN SWORD 1 & 2
+
+These games people are probably more familiar with than the other
+two. Personally, I liked "Sky" more. It seems that people generally
+find more problems with the game's puzzles than I did, which is as
+much as can be said for the gameplay. They did make some good work on
+the animations, so well done there. Other than that, however, I found
+the games to be pretty average.

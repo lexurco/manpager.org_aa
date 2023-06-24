@@ -1,0 +1,101 @@
+Using git
+
+Most tutorials are pretty bad because they can only attempt to give
+you some surface-level overview, and scarcely any give you leads on
+further research. Git seems to be one of the worst examples of the
+trend, and yet the irony is that git is very simple. All you really
+have to do to understand git is type `man gittutorial'. The command
+is very deceptively named: by the time I started using Unix, and so
+have learned of the great blessing that is actually having your
+operating system, and most software under it come with a manual, I
+already knew a bit of git, so I thought "I don't need yet another
+tutorial, I need a manual!" Well, more than a year later it turned
+out that although gittutorial(7) indeed is a tutorial, not very
+useful by itself, manuals it references are. Particularly,
+gittutorial-2(7) and gitcore-tutorial(7) contain an actual
+explanation of how git works.
+
+So, my biggest suggestion is to read gittutorial(7), and some of the
+further pages it reference. Do it now, and return if you want to
+read the rest of the article for some reason later.
+
+OK, you should have read or skimmed through at least gittutorial(7),
+gittutorial-2(7), gitcore-tutorial(7), gitglossary(7) and
+giteveryday(7). You should be able to say what things like "HEAD^^^",
+"refs", "objects", "branches" and "tags" are (and not merely what
+they might mean). In the next section I will tell why I think git
+(both porcelain and plumbing) is quite good, actually, and how to
+really appreciate the system.
+
+
+BACKEND (PLUMBING)
+
+Git's backend is awesome! This should be obvious to anyone who've
+read gitcore-tutorial(7), and to whom Unix is more than just "that
+server OS I have to deal with at work".
+
+The git repository is just a dumb filesystem. It stores two things:
+
+1. Every bit of content ever to be recorded as an object (a blob or a
+   tree). The objects' format accounts for the deficiencies of some
+   filesystem, so you may even store your git repository on a
+   FAT32-formatted flash drive (though why would one do that I am
+   uncertain)
+2. A bunch of references so that you don't have to memorise each
+   object's hash. In lieu of not all filesystems supporting actual
+   links, these are just text files.
+
+Unfortunately, the objects' binary format makes them less immediately
+useful because you can't use normal Unix commands with them (though
+you can with references). Instead git repositories should be treated
+somewhat like an archive, except instead of tar/cpio/whatever you
+type `git'. With that in mind it becomes simple (if not exactly
+convenient -- that's what the frontend is for) to, e.g., print each
+"file" (object) "below", e.g. master:
+
+$ git ls-tree .git/refs/heads/master
+100644 blob <hash1> file1
+100644 blob <hash2> file2
+040000 tree <hash3> dir
+...
+$ echo "here's file1:"; git cat-file blob <hash1>
+...
+$ echo "here's file2:"; git cat-file blob <hash2>
+...
+$ git ls-tree <hash3>
+...
+# repeat with each object
+
+With commands like these it becomes very much possible to implement
+some convenient frontend via scripts. In fact, that's how git used
+to be, but now they have the entire front-end in C as well (for
+speed, presumably).
+
+
+FRONTEND (PORCELAIN)
+
+Git's frontend is, perhaps, its most chided part. Some of the
+criticism is true. Personally I dislike how many commands use such
+long and hard-to-type options. When I complain people often answer
+that I should use tab-completion. My counter is usually that
+tab-completion should not be needed in the first place, and instead
+we ought to do better more when designing interfaces.
+
+A lot of complaints, however, comes from the people who never took
+their time to understand the system, and now don't understand what is
+it they are interfacing. Such is often the way.
+
+The important points for ergonomic use of git are:
+
+1. Understand the backend -- much in the frontend's man pages is
+   written from the backend's point of view
+2. Read git-rev-parse(1), which will allow you to type things like
+   "@^" instead of "HEAD^"
+3. Use branches and, perhaps, tags to mark the immediately important
+   commits -- you can then type "git diff master mybranch" instead
+   of first scanning "git log" and then "git diff <hash> <hash>"
+
+Once you've got that, read giteveryday(7), and whatever frontend
+man pages you are likely to need. Some of them are quite a bit longer
+than they should be, but only some of that is of immediate
+importance. The rest can be referenced as needed.

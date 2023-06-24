@@ -1,0 +1,438 @@
+battlestar(6) is an game written by "His Lordship, Admiral David W.
+Horatio Riggle." It is an adventure game not unlike adventure(6)
+(yes, that's a pun). His Lordship claims it to be less of a puzzle
+and more of an exploration-game. Apparently he wrote it to learn C
+better (the game was written in 1979, however, so we are still
+talking about pre-ANSI C with its weird function declarations and the
+like). It also has some interesting verbs like "fuck" (unfortunately
+performing that on corpses and general population does not lead to
+results all that interesting). But that's not all! battlestar(6) is
+not "just" an adventure game: It also has what I can only describe as
+"action segments!"
+
+All that sounds pretty neat. Considering that adventure(6) has a small
+collective that managed through a lot of research and collaboration
+find every one of the game's secrets, so should battlestar(6)...
+Except it doesn't! The game is actually worse at teaching the player
+how to play than adventure(6) is, and there don't appear to be any
+walkthroughs on the internets. The only way I managed to complete the
+game was by consulting the source code. So, for the first time ever
+I am writing a walkthrough.
+
+For a bit of clarification: I started playing battlestar(6) on Void
+Linux and consulted the same sources as the ones from which the games
+are compiled on Void (which, I think, are *not* Debian's and are
+written in bronze-age (pre-ANSI) C (but I might be mis-remembering)).
+Later my life returned to normal somewhat and I continued playing on
+OpenBSD. For that purpose I downloaded the source tree via CVS and
+observed that the games have been rewritten somewhat, mostly
+stylistically, however: adventure(6)'s main.c still is written in the
+kind of style that used to infuriate Dijkstra etc.
+
+Oh, but what even is a battlestar? Well, I was wondering that as
+well. Apparently at about the same time (1978) there used to exist
+one of those very cheap, uninspired and horribly dull American
+television-space-shows called "battlestar Galactica". By "battlestar"
+the authors, of course, meant a sort of space-carrier-ship because
+the meaning is so "obvious". The premise of the series, as far as
+there is one, is that a very advanced human civilisation lives on
+some far-away planets, waging war against some robots called
+"cylons", whose dearest wish it seems to be to murder every man alive
+for no reason at all. Of course, the character I shall refer to as
+"Judas Iscariot" assists the robots in doing so on the condition that
+they spare his home-planet Guatemala (not what they called it, but I
+have bad memory for things that are somehow nonsensical, yet
+uninspired) and install him as its president. Genocide is something a
+lot of very resourceful people have failed to achieve on a lesser
+scale after decades of constant work, yet the robots desecrate 99% of
+human population in just a few hours. The other 1% is divided in
+half: 0.5% is left to starve to death, while the lucky few fly in the
+general direction of the earth, where we, their very primitive
+brethren live. Naturally, the robots at first try to execute Judas
+Iscariot after killing every single other Guatemalan, but then decide
+to instead put him in command of an entire fleet with the sole
+purpose of pursuing these space-gypsies. It's much more boring than
+it sounds like.
+
+And what does any of it has to do with the game? Well, not much. The
+player starts on a "battlestar" that features smaller spacecrafts
+called "vipers", and then goes into space where there are a bunch of
+"cylons" to kill, but that's about it.
+
+
+WALKTHROUGH
+
+So, first thing to do is to open the file words.c in the source code
+and find all the VERBS. Now actually start the game.
+
+The game starts at a LUXURIOUS STATEROOM. We check our inventory and
+see the following:
+
+	>-: i
+	You aren't carrying anything.
+
+	You are wearing:
+
+		pajamas
+
+	You are in perfect health.
+	>-:
+
+(Some time after my first session I noticed that the prompt looks a
+bit like a sad face.)
+
+Oh, and, yes, we'll be completing most of the game in a pyjama, so I
+suggest making an alias like `alias hitchhiker=battlestar'.
+
+If we go back we will discover some royal robes, which we can
+put on instead, however they don't appear to have any effect
+whatsoever (no, really, "grep 'ROBE|PIJAMA' *.c" yourself), so
+instead we shall go right.
+
+From the EXECUTIVE SUITES we can go in all six directions.
+
+Ahead is the MAID'S UTILITY ROOM. Unfortunately, the maid has
+accidentally stabbed herself to the death with a knife! We take the
+knife, leaving the body for the police, and go back.
+
+To the right is the PRESIDENTIAL SUITE. It has a laser pistol just
+lying on the floor, so we take that. If we go ahead we can discover
+that the president too has accidentally shot himself to death, so
+instead we go back.
+
+Down at the FIRST CLASS LOUNGE we discover some rubble and matches.
+There is not much to see at the back, so we go up.
+
+We could go up to get another knife and a cleaver, but we already
+have a knife! So instead we go ahead to the bridal suite.
+
+In the BRIDAL SUITE we put on a strange amulet that we found lying on
+the floor and go down.
+
+In the HALLWAY there area a bunch of coins, which we take and go
+right and ahead.
+
+From the MAIN HANGAR we can go left, up or right.
+
+The only thing of interest on the left is a nuclear warhead.
+Unfortunately, all possible interactions with it may or may not
+result in the player's death, so we won't be going left.
+
+Up and right actually lead to the same locations. We go right twice.
+There are two guards "guarding" something called "Viper," but they
+don't seem to mind us launching too much.
+
+At this point the game prints a very helpful message:
+
+	>-: launch
+	You climb into the viper and prepare for launch.
+	With a touch of your thumb the turbo engines ignite, thrusting you back into
+	your seat.
+
+		You are in space.
+
+
+	>-:
+
+So, what is "space" exactly? Well...
+
+	...
+	/* 32 */
+	{"You are in space.",
+		{33, 34, 35, 36, 37, 1, 33, 1},
+	"****\n", {0} },
+	/* 33 */
+	{"You are in space.",
+		{38, 32, 39, 40, 41, 1, 42, 1},
+	"****\n", {0} },
+	/* 34 */
+	{"You are in space.",
+		{32, 44, 45, 46, 47, 1, 48, 1},
+	"****\n", {0} },
+	/* 35 */
+	{"You are in space.",
+		{40, 45, 49, 32, 50, 1, 51, 1},
+	"****\n", {0} },
+	...
+
+This is all part of a struct room (two of them technically), which is
+defined in extern.h:
+
+	struct room {
+		const char   *name;
+		int     link[8];
+	#define north	link[0]
+	#define south	link[1]
+	#define east	link[2]
+	#define west	link[3]
+	#define up	link[4]
+	#define access	link[5]
+	#define down	link[6]
+	#define flyhere	link[7]
+		const char   *desc;
+		unsigned int objects[NUMOFWORDS];
+	};
+
+So, right off, flyhere and access are useless when trying to draw
+some sort of a map. Miraculously there are north, south, east and
+west in space, but we are yet to invent a space-proof compass. But
+first of all: which point of space are we even in? Well...
+
+	$ grep ^launch\( *
+	command6.c:launch()
+	$ less command6.c
+	...
+
+Oh, but of course, we are at location[position].up! Also known as 32.
+So, knowing that rooms 32-66 are all space, it appears that other
+options include: 67 and 68, corresponding to the orbits of a small
+blue planet and a tropical planet. The first leads to 69, and while
+it is, as the user of an internet forum would put it, "nice," I
+wouldn't go somewhere described as:
+
+	...
+	{69, 69, 69, 69, 69, 1, 69, 1},
+	...
+
+So instead we'll try to navigate to the tropical planet. This,
+thankfully is much more straightforward than the labyrinths of
+adventure(6) our path is 32-34-44-64-66-68, or s-s-s-s-s-s --
+basically, we just need to find that mysterious "space south."
+Throughout these space rooms there are also some objects called
+CYLON, being in one cell with a CYLON triggers the function visual(),
+which produces a visual fight with the alien. I know that on this
+path the only CYLON is in the room 64, which we can use to determine
+which direction is south (it's right because by typing `r' once and
+`a' twice I arrive at a CYLON).
+
+So, how about defeating the CYLON? Well, turns out that this is a
+curses game as well (of course it is!), and I don't really know how
+to use curses. Anyway, before starting the fight, I'd make sure that
+the terminal being fought on is 80x24, because that will make things
+much simpler. Right, I don't think I can put off reading fly.c any
+more because the in-game prompts are most unhelpful.
+
+So, the first thing to do is to press plus (`+'). This will draw a
+target in the middle of the screen. Our objective is to bring the
+enemy (looks like `/-\') there and press `f' or space to fire. Of
+course we can't move the enemy, but we can move ourselves by pressing
+h/r, l, j/u and k/d along with their capitalised versions for greater
+effect. This is the hardest part of the game!
+
+Save once the game says "You are orbiting a tropical planet." Go
+down, approaching an island. This is the main part of the game.
+
+At this point you are free to explore the island, which is the main
+part of the game. Completing it is very tricky, however. A sequence
+that seems to work:
+
+1. Firstly, it is very important to find the goddess. If not found,
+she will disappear after the first day. Once the goddess is found you
+need to kiss her, follow her, kiss her a few more times and finally
+love her. She will drop a medallion. DON'T take it (now at least).
+
+2. Find a woman who'll tell you that she wants to meet you in the
+gardens at midnight. Once there and then, accept a rope from her.
+
+3. Otherwise explore the island. You should at least find the potion
+before the rendezvous.
+
+4. Quickly go to the catacombs. They are only open at night, so there
+is no time to lose.
+
+5. There are mainly three points of interest here: the sepulchre, the
+room with the dark lord (a.k.a. darth vader) and a storage room. The
+latter contains a grenade, which is quite honestly not that
+interesting of an item. The sepulchre is more interesting: it
+contains a mail shirt, an armoured helmet and a sword. It is vital to
+go into the final fight wearing (not carrying) mail, the helmet, the
+rope and carrying (not wearing) the sword, the laser, the potion
+and the amulet.
+
+6. In the last room before Darth Vader make sure to sleep and eat if
+carrying food and a knife. Enter with the aforementioned items and
+smite the enemy until you deal him 34 points of damage (see below on
+the explanation of the fight mechanic). Then retreat by typing `b'.
+He'll take your amulet and retreat. Follow him. Now smite him until
+you deal him 25 points of damage and finish him off by shooting. At
+this point you will most likely have so many injuries you won't be
+able to do anything, which is why we brought the potion. Drink it to
+restore your health. There'll be some treasures lying around. We just
+want to take the amulet, the talisman and throw the rope up to
+escape. Once on the surface (you'll need to climb there with command
+`u') use amulet -- that'll teleport you outside of the canyon.
+
+7. Finally return to the nymph and give her the amulet and the
+talisman. Follow some further instructions.
+
+
+COMBAT
+
+I already touched the space-combat briefly and there is not much more
+to explain. Ground-combat is a bit stranger. There are three types of
+enemies: woodsmen, elves and Darth Vader. All that should be known
+about the first two is that carrying a laser and typing `shoot' puts
+a swift end to the affair. The dark lord is more complicated than
+that.
+
+There are several things to keep in mind when a fight starts: the
+type of enemy, his strength, your tiredness, your injuries, the sort
+of weapon carried, wearing one or several of the medallion, the
+amulet and the talisman, and wearing mail and helmet and carrying
+the shield.
+
+There are several things that can be done on each turn: smiting,
+shooting going back and managing inventory. I advise to go into
+fights with the inventory already managed.
+
+The enemy's strength determines two things: how many times will he
+have to be smitten before he dies and how many times will he have to
+be smitten before he may be killed through shooting instead of having
+your laser deflected and destroyed. It is, essentially "health
+points" and they are opposed to the value of lifeline, which
+indicates how many "damage points" has the enemy suffered. The dark
+lord starts with 100 strength the first time and 75 the second time.
+
+With each round of the fight you become more tired. If you are
+sufficiently tired, the enemy simply kills you.
+
+injuries is an array of 13, that determines what parts of your body
+are injured and how much. Each turn a number between 0 and 12 is
+generated in order to determine which part of your body the enemy
+will try to injure. The following items each reduce that number by
+1: helmet (worn), mail (worn) and shield (held). Similarly for
+each of the amulet, the medallion and the talisman being worn the
+number is increased by 1. Should the number be less than 0 it becomes
+0, equally it won't exceed 12. The injuries 10, 11 and 12 are
+particularly important: they correspond to the deep incisions,
+fractured skull and broken neck. Should these three injuries happen
+at the same time you'll die, which is why it is so important to wear
+at least some protective gear, which can make one or several of these
+injuries impossible.
+
+Aside from the laser there are three kinds of weapons in this game
+the first is the two-handed sword, the second is the normal sword and
+the broadsword, the third is everything else. The two-handed sword is
+the most damaging, however it is impossible to carry almost anything
+else together with it (laser, importantly), so I am avoiding it. A
+sword is lying not far from Darth Vader together with mail and a helmet,
+so we'll use that.
+
+The damage dealt is calculated slightly differently depending on the
+type of weapon. For sword it is:
+
+	rnd(50) % (WEIGHT - carrying) - card(injuries, NUMOFINJURIES)
+	    - encumber - exhaustion.
+
+It's mostly self-explanatory. Depending on how much damage was dealt
+one of the following messages will be displayed:
+
+0:
+	You swung wide and missed.
+	He checked your blow. CLASH! CLANG!
+	His filthy tunic hangs by one less thread.
+1:
+	He's bleeding.
+	A trickle of blood runs down his face.
+	A huge purple bruise is forming on the side of his face.
+5:
+	He staggers back quavering.
+	He jumps back with his hand over the wound.
+	His shirt falls open with a swath across the chest.
+10:
+	A bloody gash opens up on his left side.
+	A bloody gash opens up on his right side.
+	The steel bites home and scrapes along his ribs.
+	You pierce him, and his breath hisses through clenched teeth.
+20:
+	You smite him to the ground.
+	The force of your blow sends him to his knees.
+	Clutching his blood-drenched shirt, he collapses, stunned.
+30:
+	His ribs crack under your powerful swing, flooding his ...
+55:
+	You shatter his upheld arm in a spray of blood.  The blade ...
+	With a mighty lunge the steel slides in, and gasping, he ...
+
+Shooting the enemy will instantly kill him if his strength minus the
+damage you've dealt already is less than or equal to 50. Otherwise
+he will deflect and destroy your laser.
+
+Going back is quite interesting. Normally it prints how far you've
+got in the fight and you retreat back. Of course, the next time the
+fight starts none of the displayed stats will matter. It is, however,
+necessary to retreat during the first fight with Darth Vader. If
+you've managed to deal him 34 (or maybe 33 since it involves
+floating-point arithmetic) points of damage, while wearing or
+carrying the amulet and try to go back he will either:
+
+1. Trigger a game-over in case you also have the medallion on you.
+2. Fracture your skull and retreat with your amulet. Afterwards you
+can follow him, which is the only way to get into the room with the
+talisman.
+
+Hopefully that explains the combat system.
+
+
+FINAL BUG/FEATURE
+
+Now one would think that this plan I've outlined of defeating the
+dark lord and saving the day would be some sort of a guarantee. Well,
+no, it still relies quite heavily on random numbers being in the
+player's favour. I have, however, found a -bug- feature thanks to
+which completing this game doesn't even require a laser, or a
+two-handed sword. You see, you've got to follow the dark lord after
+he cowardly retreats and then fall back yourself. The author seems
+to have "forgotten" (actually he's probably just left cheats for
+himself!) to account for that final fight in the fight() function.
+The logic there depends somewhat on your previous position, so there
+are two ways it may go: either you and all the items remain in the
+same room, or you, the amulet and the talisman are transported
+somewhere else. Either way, all that remains to do is to navigate to
+the nymph.
+
+
+OTHER TIPS
+
+While flying, it is easy to return back to the original location on
+the island by simply following a `u' with a `d'. It is, however,
+somewhat dangerous at night, as yet another cylon will be spawned
+just above the planet.
+
+After you return to the goddess, collect the medallion and go to
+another room. You will become a wizard! (If you still have the other
+two on you.) This gives you the ability to type the magic word `su'
+and to fly without an aeroplane.
+
+
+ENDING
+
+So, I realise not all people consider such feats of exploration worth
+their time, therefore I finally leave the game's ending here.
+
+>-: give amulet to goddess
+amulet:
+Given.
+>-: give talisman to goddess
+talisman:
+Given.
+>-: give medallion to goddess
+medallion:
+Given.
+The powers of the earth are now legitimate.  You have destroyed the Darkness
+and restored the goddess to her throne.  The entire island celebrates with
+dancing and spring feasts.  As a measure of her gratitude, the goddess weds you
+in the late summer and crowns you Prince Liverwort, Lord of Fungus.
+
+But, as the year wears on and autumn comes along, you become restless and
+yearn for adventure.  The goddess, too, realises that the marriage can't last.
+She becomes bored and takes several more natives as husbands.  One evening,
+after having been out drinking with the girls, she kicks the throne particularly
+hard and wakes you up.  (If you want to win this game, you're going to have to
+shoot her!)
+>-: shoot goddess
+The blast catches the goddess in the stomach, knocking her to the ground.
+She writhes in the dirt as the agony of death taunts her.
+She has stopped moving.
+
+You win!

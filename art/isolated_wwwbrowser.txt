@@ -1,0 +1,100 @@
+Nowadays it is often necessary to use either firefox, or chromium for
+tasks that you'd think to be basic enough not to require anything
+special. These programs are so huge that they tower over the Linux
+kernel like Goliath did over David, and even worse they are meant to
+do the stupidest thing since the dawn of networks -- connect to
+untrusted hosts and interpret arbitrary scripts supplied by them.
+Truly we live in a dark time!
+
+Anyway, it is actually pretty simple to isolate this great evil from
+the parts of your system that you probably don't want it to touch, or
+even see. The method consists of launching the offender inside a
+nested X session under a different user. There are particular
+benefits to doing that on OpenBSD because both browsers are further
+limited with unveil(2) and pledge(2), meaning that their visibility
+of the file system is limited even further, and the amount of
+available syscalls is much less crazy too.
+
+Nevertheless, it should work on other Unices, just as long as X is
+available. There you might, however, have to do your own research on:
+
+- setting up sudo;
+- setting up disc quotas;
+- setting up other limits (CPU time, memory, &c.);
+
+On OpenBSD read at least the following man pages: Xephyr(1),
+xauth(1), useradd(1), doas.conf(5); and the FAQ 14:
+https://www.openbsd.org/faq/faq14.html .
+
+For the basic set-up we change permissions for our own home directory
+to 750 because we are paranoid and create a new user:
+
+# chmod 750 /home/mainuser
+# useradd -m anotheruser
+
+A nice thing about OpenBSD is that the resources that any process, or
+user may employ are already pretty limited, with some allowances made
+for the staff login class (naturally, we'll be keeping anotheruser
+outside of staff). For setting up a disc quota, consult the FAQ,
+however. You may also put some other restrictions, for instance
+limiting printer access to users inside the printer group:
+
+lp|someprinter:\
+	...\
+	:rg=printer
+
+Of course, if you do stuff like this, it only makes sense to
+have your firewall limit anotheruser's access to either most of the
+local network, or at least some addresses. And you don't have to stop
+there, but I will just for the moment.
+
+As for giving anotheruser an environment, where he may be *allowed*
+to do some things, you can use a simple script:
+
+#!/bin/sh
+
+umask 077
+
+[ $# -lt 1 ] && set -- :10 -screen 1280x720 -no-host-grab
+Xephyr "$@" &
+xephyrp=$!
+ps -p$xephyrp >/dev/null || exit 1
+while ps o stat -p$! | grep -Fq R; do :; done
+ps -p$xephyrp >/dev/null || exit 1
+trap 'rm -f $tmpfile; kill $xephyrp 2>/dev/null' EXIT INT HUP
+
+for e in $(export); do unset $e; done
+export PATH=/bin:/usr/bin:/usr/local/bin:/usr/X11R6/bin
+export DISPLAY="$1"
+
+tmpfile=/tmp/$$
+[ -f $tmpfile ] && {
+	echo "ERROR: temporary file $tmpfile already exists" >&2
+	exit 1
+}
+: >$tmpfile
+xauth -qf $tmpfile generate $DISPLAY . trusted
+nlist=$(xauth -f $tmpfile nlist $DISPLAY)
+rm -f $tmpfile
+
+doas -u anotheruser /bin/sh -l <<x
+	cd $HOME
+	xauth -q remove $DISPLAY
+	echo $nlist | xauth -q nmerge -
+	exec fvwm
+x
+
+If you don't want to type the password each time, add the line
+
+permit nopass mainuser as anotheruser cmd /bin/sh args -l
+
+to doas.conf.
+
+Once you successfully execute this script, you'll get an Xephyr (or
+is it an American program, and X is meant to be pronounced as Z? If
+it is, then it's too stupid, I'll just have to keep pronouncing X as
+a letter-name) window with fvwm inside. You can use fvwm to launch
+xterm, and you can use xterm to launch firefox. To see how well
+things are isolated, try copying some text in one X session (either
+the normal one, or the one inside Xephyr), and pasting it in the
+other -- you should fail!

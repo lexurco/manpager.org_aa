@@ -1,0 +1,206 @@
+Over what must have been more than a year I've read a lot of RFCs,
+had a lot of experience and put a lot of thought into mailing. This
+is the third version of this article. Most articles on setting up a
+mail system have their readers do a lot of work with the latter
+ending up with a complex monstrosity they do not understand. My
+system is dead-simple and easy to extend within limitations of a
+small server.
+
+The entire mailing system of ours shall consist of the following:
+OpenBSD (though we only *really* need OpenSMTPD, which I hear has
+been ported), ssh and your favourite mail client & operating system.
+That's it! Not even a POP server!
+
+One thing I didn't bother doing this time is dkim. At the bottom are
+my old instructions on setting dkim up (section DKIM): they shall not
+be maintained too much.
+
+
+BLACKLISTS
+
+In the world of email, and spam, and housewife-targeting
+bitcoin-miners there are a lot of blacklists that many servers adhere
+to. Most of those are run by crooks, however it is still important to
+check if your IP address is in one. So, before anything else, paste
+it into a [blacklist checker], and request a different address should
+that one be spoiled.
+
+
+DNS
+
+We are interested in the following: A, AAAA, MX, PTR (i.e. rDNS), and
+a couple of TXT ones (spf and dmarc). PTR is set up by the network
+block owner (usually same as ISP) and should be the same as HELO that
+the server will send (the server's FQDN). Virtual host providers
+usually have a web-form for setting up PTR. Otherwise you'll have to
+actually request it being changed by talking to people.
+
+Others are set up as usual. In the end something like this should
+suffice:
+
+	example.com. 600 IN A 1.2.3.4
+	example.com. 600 IN MX 0 example.com
+	example.com. 600 IN TXT "v=spf1 a mx ip4:1.2.3.4 ~all"
+	_dmarc.example.com. 600 IN TXT "v=DMARC1; p=none"
+
+Add ipv6 if you can as well.
+
+
+SMTPD
+
+Firstly we shall get a key and a cert (which will be self-signed):
+
+	openssl genrsa -out /etc/ssl/private/example.com.key 4096
+	openssl req -new -x509 -key /etc/ssl/private/example.com.key \
+	    -out /etc/ssl/example.com.crt -days 365
+	chmod 600 /etc/ssl/example.com.crt
+	chmod 600 /etc/ssl/private/example.com.key
+
+And automatically renew it with the following crontab:
+
+	0 0 1 */6 * opnssl x509 -in /etc/ssl/example.com.crt -signkey /etc/ssl/private/example.com.key -out /etc/ssl/example.com.crt -days 365 && chmod 600 /etc/ssl/manpager.com.crt
+
+And, yes, the certificate is 600, please refer to smtpd.conf(5) for
+actual docs, this is just a small example.
+
+Some people might also say that I should here use a CA-signed cert.
+Well, no, not really, there are unlikely to be any problems: I
+haven't experienced any and I force tls. Funny thing about mail is
+that there are all sorts of crazy set-ups, where it bounces between
+ten different not-really-trusted servers in-between the sender and
+the actual target. In the end who knows if there'll be an appropriate
+cert at the penultimate hop? So, we are lucky to have any encryption
+at all! This is why the validity of the certs is usually only checked
+in the purely-internal scenarios by the vast majority of SMTP servers
+out there (and the ones that are more strict are probably
+misconfigured!).
+
+Speaking of which, here's /etc/mail/smtpd.conf itself:
+
+	pki example.com cert "/etc/ssl/example.com.crt"
+	pki example.com key "/etc/ssl/private/example.com.key"
+
+	table aliases file:/etc/mail/aliases
+
+	smtp sub-addr-delim "_"
+
+	listen on lo
+	listen on egress tls-require pki example.com
+
+	action "local" maildir "%{user.directory}/mail" alias <aliases>
+	action "in" maildir "%{user.directory}/mail"
+	action "out" relay tls no-verify pki example.com
+
+	match from local for local action "local"
+	match from any for domain example.com ! rcpt-to root action "in"
+	match from local for any action "out"
+
+Do, by the way take a look at aliases: you might, for instance, want
+local mail to root to arrive to another user instead.
+
+Set up thus, our server will refuse to talk with others over
+plain-text, meaning less spam. If that bothers you, read the mans (or
+just remove "tls-require"). And no, the server doesn't handle
+authentication: that is done with ssh below.
+
+
+SPAM?
+
+You might have noticed that we are not running any spam-filters on
+the server itself (other that denying external mail to root). You
+might have also noticed that I introduced the mysterious line
+`smtp sub-addr-delim "_"'. This line is responsible for the vast
+majority of spam-filtering anyone will ever need. With this mail to
+alexander@example.com, alexander_smith@example.com and
+alexander_alexander@example.com arrive to the same user alexander,
+while the assholes of the internets are none the wiser because
+underscore is a character commonly used for actual usernames, but not
+subaddresses. Now, simply use different subaddresses for different
+purposes, and perhaps employ some subaddress-based whitelist with
+procmail or something like that.
+
+Beyond that, however, there is spamd and rspamd, which also contain
+interesting stuff like spam traps, or denying mail with bad helo &c.
+Just don't use those horrible blacklists, please!
+
+
+CLIENT
+
+This section used to contain my set-up for the set of maildir
+utilities mblaze, but that proved to be too much of a moving target.
+I therefore leave most of the MUA set-up up to the reader, and only
+describe the way of emulating an MDA and MTA with ssh.
+
+To get mail, create a script, say, "msync":
+
+	#!/bin/sh
+
+	while :; do
+		cd $HOME &&
+		scp -r user@example.com:mail/new/ mail/ 2>/dev/null &&
+		    find mail/new -type f -exec \
+		    ssh user@example.com rm {} + 2>/dev/null
+		sleep 3600
+	done
+
+It may be called automatically from, e.g., ~/.profile:
+
+	while :; do
+		ps xo args | grep -q msync$ || msync
+		sleep 10
+	done >/dev/null 2>&1 &
+
+Some shells know what a maildir is, and if you set the variable $MAIL
+to the path to you maildir, they will notify of your mail. Otherwise
+you may put something like this in you, e.g., ~/.kshrc:
+
+	ls $HOME/mail/new/* >/dev/null 2>&1 && echo You have mail.
+
+And sending mail is as simple as creating this script:
+
+	#!/bin/sh
+
+	ssh user@example.com sendmail "$@"
+
+Now either call it "sendmail" and put it in your $PATH so that it is
+found before the actual sendmail (if any), or configure your MUA to
+use this script instead of sendmail.
+
+
+DKIM
+
+If you take this set-up and go to mail-tester.com, you are likely to
+get 9/10 with -1 being for DKIM. It means that the absolute vast
+majority of mail servers in the entire world will accept you mail. If
+you still want dkim, do the following on your server:
+
+	pkg_add opensmtpd-filter-dkimsign
+	mkdir -p /etc/mail/dkim
+	doas -u _dkimsign openssl genrsa -out /etc/mail/dkim/private.rsa.key 1024
+	openssl rsa -in /etc/mail/dkim/private.rsa.key -pubout
+
+Add the following DNS record:
+
+	<selector>._domainkey.example.com. 680 IN TXT "v=DKIM1;p=<pub>"
+
+<selector> can be any string and <pub> is the one that we just
+printed printed (it'll be over several lines, make sure to paste
+it all without whitespace).
+
+Finally, add this to /etc/smtpd.conf
+
+	filter "dkimsign_rsa" proc-exec "filter-dkimsign -d example.com -s <selector> \
+	    -k /etc/mail/dkim/private.rsa.key" user _dkimsign group _dkimsign
+	listen on socket filter "dkimsign_rsa"
+
+Of, course, make <selector> same here as it is in the records.
+
+This *should* do it, but I give no promises. If you want the key to
+have more than 1024 bits, you'll also need to spread the selector
+across several strings in the DNS records. And even with 1024 you
+might have to do it. I don't even know.
+
+
+REFERENCES
+
+[blacklist checker] https://mxtoolbox.com/blacklists.aspx

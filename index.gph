@@ -1,0 +1,11 @@
+I am Alexander, the insane Unix hacker and owner of alearx.org. To
+know more, please see the README file.
+
+[0|README|/README.txt|server|port]
+
+[1|articles|/art/|server|port]
+[0|plan|/plan.txt|server|port]
+[0|feed|/feed.ass|server|port]
+[1|news|/news/|server|port]
+[1|ftp|/pub/|server|port]
+[1|git|/git/|server|port]

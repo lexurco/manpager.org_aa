@@ -1,0 +1,368 @@
+I am quite partial to the games "fallout" 1 and 2, as I grew up
+playing mostly those and some strategy games. So I was very happy to
+find out one day that the second game has been mostly successfully
+reverse-engineered and ported to sdl as [fallout2-ce]. Whilst the
+memories are still fresh, I will here attempt to summarise my first
+experience with the port.
+
+
+INSTALLATION
+
+So, my first question was "ok, but does it compile on OpenBSD?" Well,
+it does. Quite well in fact. The project uses cmake, for which the
+author gets -15 karma. Initially compilation failed, I suspected some
+lacking linking flags to be the culprit. Googling a bit I found how
+to force cmake to actually print commands it uses, rather than just
+uselessly report errors, and found that just as I suspected the
+command lacked -L/usr/local/lib. It took me a bit more googling after
+which I found out that I can set this flag by running cmake with
+-DCMAKE_EXE_LINKER_FLAGS=-L/usr/local/lib. There weren't any
+compilation errors afterwards and the game ran quite well after I put
+the binary into the game's root directory and launched it as
+`./fallout2-ce' (so the pwd is the game's directory).
+
+There turned out to be some problems with the data files then.
+Firstly I had to change f2_res.ini a bit so that the window does as
+little damage to my system as possible: I set WINDOWED to 1, and
+later SCR_WIDTH to 640 and SCR_HEIGHT to 480. There still were some
+problems with the mouse, however, to fix which I had to restart the
+game. Also I noticed that the music sometimes would play, and
+sometimes wouldn't. To fix that I made sure that all files and
+directories mentioned in fallout2.cfg are named exactly as they are
+mentioned there and also made four copies of all files in
+sound/music: all-lowercase, all-uppercase, upper before period and
+upper after period (e.g. 01hub.acm got copied to 01HUB.ACM, 01HUM.acm
+and 01hub.ACM). The reason being, of course that somehow caseless
+fopen is not yet implemented in this program. Also it later turned
+out that one of the maps in addition to mixing case randomly has a
+typo, so I copied 13carvrn.acm to 13carvrvn.acm. I vaguely remember
+there being no music in the area in the original, but I often skip
+Redding anyway, so perhaps its just a local "feature".
+
+
+NEW CHARACTER
+
+I played a jinxed character once on normal difficulty without
+investing much into armour class and ultimately ended up not liking
+it. This time I thought "but what if I play on easy and invest as
+much as possible into AC?" Well, this way it actually turned out to
+be pretty fun up to and including New Reno, but I rushed the rest of
+the game. The character was like this:
+
+        age: 33
+	gender: male
+	name: Dr. Scar (after the lion king character)
+	attributes: 1 luck and charisma, the rest is mostly even
+	traits: jinxed, heavy bruiser
+        tags: doctor (useful), lockpick (less useful), steal (which I
+            thought to be funny)
+
+The idea is to get HtH evade and tag unarmed once it can be boosted
+to 300 thus. I decided that my character should be a somewhat chaotic
+force, neither strictly evil, nor very righteous: I'd for instance
+become a slaver, but would then help Modoc instead of slaughtering
+some innocent farmers.
+
+My disappointment was almost immediate, as I noticed that for some
+reason none of the giant ants ever seemed to crit miss, but they did
+crit hit for 0 damage quite a lot. Found the issue pretty quickly and
+spent the weekend reviewing the rest of the file. Fixed some other
+bug, sent the diff to the owner. Now my fixes are part of the engine.
+
+
+THE BEGINNING
+
+After that I decided to actually do Arroyo for once, instead of
+immediately wondering in the general direction of the GECK.
+Slaughtered a more-than-reasonable amount of the templar fauna and
+actually kicked Cameron's butt instead of stealing the key from him.
+I think I might have ended up poisoned with 1 health, however, so my
+next stop was Hakunin's tent. Attempted refusing the main quest, had
+to take it anyway, didn't respect the shaman, completed all local
+quests available to me, went east to Klamath.
+
+At Klamath I talked to Ardin: told her how sad I am about Smiley, but
+didn't offer to help. Instead went straight to "whisky" Bob, agreeing
+to refuel his still; immediately decided it was not worth it and sold
+him out to Sajag. Satisfied with myself I told Torr that I'll help
+him guard his cows. As soon as two suspicious-looking men offered me
+some cash to betray Torr as well, did that. Returning found out that
+Torr ran in the least convenient of directions (for him), so I
+decided to help him for more money; did just that. With my newfound
+wealth I exchanged some of that and half the junk from around the
+town for a suit of leather armour. Well-protected I went straight to
+the rat-infested part of town to one-hit-kill the rat king. I did, of
+course, take the fuel-thingy from the car, but later I decided to
+stash it in a container until I can actually use it. I quickly forgot
+which one, however, and never managed to install it.
+
+With that I went south to reach the Den. Immediately kicked all the
+local children's arses. Took Rebecca's and Lara's quests; tried to
+see what the traders have, but wasn't interested. "Got" Rebecca's
+money out of Fred, by having him promise to make me a rich man
+sometime in the future, but later I had so much money and so little
+to spend it on that I forgot about that completely. Found Rebecca's
+book. Tyler didn't to believe that I come from Metzger, so I put that
+quest off for now. Agreed to destroy Rebecca's still for Frankie. His
+whore demanded 1000$ from me, so instead I took "Mom's" quest and
+listened to Karl's story. In the slaver's guild I delivered the radio
+to Vic. After Metzger still demanded from me as much as that whore at
+the Hole, joined the guild instead. After completing the slave runs I
+bought Vic's freedom only to have the ungrateful bastard refuse to
+follow me. In-between the runs I returned Rebecca her book,
+immediately afterwards destroyed her still, delivered his (rather
+cold now, I think) dinner to Smitty, completed Lara's quests by
+getting Tyler so drunk he told me about his stupid party, and put a
+woman's ghost to rest by beating Joey the local punk to the death.
+With that I headed in the direction of the Vault City, skipping
+Modoc.
+
+I found very few bugs in this section; everything went quite
+smoothly.
+
+
+THE MIDDLE
+
+This is my favourite part of the game. There is quite a lot to do,
+usually with many possible solutions, but unlike some late-game
+locations these feel much more like real places, rather than game
+locations.
+
+Right, so, here is a very deep question to the writers: Valerie the
+mechanic of Vault City is a product of Vic fornicating with one of
+the female citizens of the city. Contrary to that fact, Phylis the
+nurse (or whatever she is) tells us that while the decades
+underground after a nuclear war have indeed made the people of the
+vault 8 devoid of marital morality, it may very well be due to the
+fact that radiation and incest have made them so sterile they are
+only able to procreate artificially. Now which one is it?
+
+Arriving to the city I immediately went to the greetings office in
+order to be very rude to both officers. After they no longer wished
+to talk with me I found a local child's stupid doll so he would tell
+me where I can find a wrench. I let my character internally curse Vic
+after he'd found out how unhelpful Ed is and proceeded to purchase
+advanced leather armour from the trader. I tried to fix the auto-doc,
+but failed.
+
+At the front gate I had attempted to get a day pass as a slaver,
+found out that I need to actually carry some "slaves" around for them
+to believe that, and instead bought a fake citizenship and, extorting
+my money back from the seller immediately after the purchase.
+Entering the city proper I immediately turned to the bar to get
+disappointed that they don't actually sell booze; sold the 20 bottles
+I just so happened to be carrying upon my person. At the repair
+"shop" I told Valerie to shut up because I already have the tools
+she needs. At the library I got some free books, read the declaration
+of the human rights, thought to myself "what sort of nonsense is it",
+told so to "Thomas Moore" (right, and then the king of Vault City
+becomes the head of the church and executes him as part of religious
+genocide) and took some quests from the city's military captain. At
+the council building I told Lynette that she was stupid for refusing
+to inspect my pyjamas, but agreed to do her dirty work so that I can
+get into the vault.
+
+Circling Gecko to complete the quest, I entered the town. At Gecko I
+discussed humour and games with the local tavern owner and spoke to
+Harold, Percy and Skeeter to take their quests. Went back to Vault
+City, took my repair kit from Valerie, reported to the security man
+and went back to Gecko with a hydroelectric magnetosphere regulator.
+Back at Gecko I simply exchanged the repair kit for the car fuel
+thingy and repaired the atomic station using the robot. Returning to
+the city I looted as much as I could from the vault (one of the doors
+got jammed and I decided not to reload) and found out about the vault
+15.
+
+It was somewhere during the previous two paragraphs that I discovered
+my horrible miscalculation. In the original you can delay picking a
+perk for as long as you care: if you don't take one at levels 3, 4
+and 5, you'll have 2 perks to pick at level 6. My plan has been to
+pick both tag and hth evade somewhere at levels 12-15. Well, it turns
+out that the feature got fixed in fallout2-ce: now if you keep
+adamantly refusing to pick a perk for 3 levels, you'll end up not
+receiving an extra pick. Later I also lost 1 perk by accident: I must
+have exited the character menu via the escape key rather than the
+"done" button and never noticed it because I decided to stockpile
+skill points for the next 3 levels.
+
+I turned west for the Den and decided to actually visit Modoc. I took
+Jo's quest, healed Bess' leg, had all of Grisham's cows saved, sold
+Bess to Grisham (of course, I never returned for the actual jerky),
+went down the well to steal a very minor amount of money. I broke
+down all of Rose's doors, bought an over-priced cookie from her, had
+her force-feed me with some cows' bollocks. In retaliation for that
+abuse I killed her "chicken". I told Cornelius I'll find his watch
+and proceeded to descend into the latrine-cave. There I found my
+first major bug: I can't remember ever dropping active dynamite in
+this cave at it not exploding immediately as I exit (in the original).
+Here, however, it would sometimes do the thing, and other times just
+keep being "active" in the unexploded cave. I had to reload several
+times. Finally I was able to tell Cornelius that Farrell stole his
+clock.
+
+At the ghost farm I immediately noticed that the "corpses" are
+dummies; after I have fallen through his floor, Vegeir confirmed the
+peaceful ways of the mole people. I went back to Jo, telling him how
+much of an idiot he and his fellow villagers (the game calls Modoc a
+"town", but I am not Yankee enough to call every settlement with 3
+families in it a "town") are. There was peace between the starving
+people and the mole people. I brought Jonny back to Balthas and
+continued towards the Den. There I found Woody, told Karl his
+compatriots decided to stop bullying him, got the car and got out. I
+must have been planning on returning to Gecko on my way back to
+Arroyo to complete the last quests there, but I never did.
+
+Instead for now I rode in the direction of Broken Hills. I actually
+thought of going to New Reno initially, but decided to actually get a
+power fist in Broken Hills first. It proved to be a prudent decision
+later. I thanked God when the zombie under my car told me that he
+isn't hurt, and just broken a few limbs. A horrible catastrophe
+avoided! I went straight to Eric to tell him the good news. Instead
+of rejoicing for my new friend, Eric kept complaining about cooling.
+I helped in exchange for some pills. According to his advice went to
+Francis. Used my skills acquired during my days as a slaver to offer
+him some "free" amphetamines, waited 10 minutes for the mutant to
+become weak and sluggish from withdrawal and ate doping myself. I
+must have paid the Olympic committee more bribes than Francis because
+they allowed me to walk away with a power fist. Talked to Marcus and
+Jacob, took all their quests, wondering in the meantime what to do
+with all these idiots. Brought a talking plant to the house of the
+old ghouls, did some tasks for Typhon, while outsmarting a very smart
+scorpion. Eventually found Typhon's stash of bottle caps, stole the
+porn mag back from him as a punishment and went into yet another set
+of lavatory-caves. There I discovered corpses of the missing people,
+described the scene in detail to a grieving husband, told Zaius that
+he is a terrible person and ordered Francis to leave the town. With
+my newfound knowledge that mutants *are* a thread of society I
+adopted racialism, rescued Mason and Franc from prison, told Zaius
+that I am going to fix his air purifier, actually blew it up. With
+the knowledge that now free of the international mutantry Broken
+Hills will grow into a great and powerful Broken Reich, colonising
+all the lands to the east, I left the town.
+
+As I arrived to New Reno I initiated dialogue with Jules just to tell
+him to shut up and instead looted Jesus Mordino's casino before
+taking a job from him. Now, here's another question: why does taking
+this job takes the player character straight to the "stables"? Can't
+it just mark those on the map? Anyway, the stables are pretty boring
+this time around. I just told Ramirez what a buffoon he is before
+delivering his poison and stole a few things from Myron. Back at New
+Reno I discovered that somebody stole my car. I'd verbally abused
+Jules until he showed me the place. I solved the situation by buying
+my own car back and getting it upgraded. After I reported back to
+Mordino he told me to get his tribute from the pornographers. The
+issue here is that for some reason those guys refuse to talk to
+slavers, who aren't also adopted by one of the bosses, or have kicked
+enough people at the boxing ring, so instead I took a quest from
+Mordino's rival Salvatore, stole batteries from him and his goons and
+started working on getting a more powerful unarmed weapon. The thing
+about it is that the "mega power" fist is not actually that much
+better than a normal one, but it is very tricky to get normally. So
+instead I decided to do what I don't do normally and get my weapons
+upgraded for free by the madmad beneath the New Reno arms. Once that
+was done I became a boxer, beat up all the other boxers, got the
+tribute from pornographers, delivered it to Mordino, completed all
+the Salvatore's quests, poisoned his air, killed all his goons,
+reported to Mordino and made him choke on nuka cola. After that I was
+still lacking one porn mag for miss Kitty, so I fornicated with mr.
+Bishop's wife, and robbed the family of their possessions.
+Unfortunately I was unable to disarm the trap on mr. Bishop's own
+safe, so I had to hide under his bed. I also wanted to plant my own
+trap on it, but found myself unable to do that either. In the end I
+just walked by Bishop back to his casino.
+
+This is another bug, actually. Walking two tiles past the door is
+supposed to trigger dialogue, out of which there'll be no escape
+other than through dozens of corpses or chickening out of the
+building. Well, it didn't. Another bug that I first noticed at New
+Reno, and which would become more and more annoying as the game
+progressed is that sometimes performing attacks or interacting with
+items would segfault the game (but not the other times, so it
+probably has to do with faulty (re)allocation, or randomness).
+
+At NCR I first and foremost talk to the local punk, who offered me to
+guard my car, in exchange for which I offered him a rude gesture. NCR
+is pretty weird. Entrance to NCR is a bit weird: it seems to be the
+only place in the world with a newly-build parking slot for cars.
+Just one. Actually some dialogue in fallout 2 would suggest that
+there are at least a few car-drivers in the area. How come it's not
+explored further? Anyway, what I gave the local bum 1000$ to work on
+my car, took quests from the slavers and the mafia and entered the
+city in the morning. Entering the city I was a bit surprised that the
+sheriff offered me a job for Westin. Instead of doing this right now,
+I stole some papers from a local researcher, stole maps from the
+rangers, killed a suicidal policeman, killed a cultist (while
+sneaking) and kicked the president's son a few times in the eyes,
+breaking his nose thus, took the quest from the president and
+completed the one for Westin. I didn't invest into outdoorsmanship,
+so failed to discover the vault 13. Returning to NCR I handed the
+papers I acquired earlier to Merk and bought a disc with the fake
+13's location, discovered it's a fake, killed Merk for refusing to
+give me a refund.
+
+I went to the vault 15, one of my least favourite locations (I've
+actually been thinking about just buying the map from the doctor, but
+ended up a little short on money). Rescued a local woman's daughter
+from raiders and went underground. There I sneaked past the guards on
+the first level, which turned out to be pretty useless, as the
+computer room's guards noticed me anyway. I thus learned of the vault
+13's location and retrieved computer parts, but was forced to fight
+my way back through the raiders. I didn't kill Darion because both I
+and probably my character considered him to be too tough.
+
+After giving Tandi her parts (and not exposing the spy because I
+didn't know that there was one) I was finally able to arrive to the
+actual vault 13. I attacked the deathclaws on sight, retrieving the
+GECK at the end, thus proving genocide to be viable solution to any
+problem.
+
+
+THE END
+
+I went back to Arroyo in an almost straight line after the village
+-idiot- shaman called me. Then I realised that I still don't have
+HtH evade, so instead of going to San Francisco rode to the
+Experience Town of Redding. This is where I ran out of Salvatore's
+batteries, so my adventures ended rather abruptly after I crashed
+a dozen times fighting Frog Morton's goons, so instead I just
+killed Frog himself and ran away with, like, four batteries left.
+
+The Shi merchants turned out to be on the other level than myself:
+selling all those tiny nuclear reactors and gauss rifles. Well,
+what about small batteries? This is my least favourite location in
+the game anyway. I took the quest from the brotherhood of steel guy,
+arrived to Navarro, killed the guy in the front, went into the
+facility via the tunnel, grabbed all the equipment I could find,
+did the usual, got the commander's guard drunk, killed the commander,
+looted his office, ran away.
+
+Back south I saved a damsel in distress on a tanker, fixed the ship's
+navigation while at it, got the damsel's boyfriend to get the fuel
+from the Shi for me and went for the final dungeon.
+
+Again during this section game seemed commited to not letting me win,
+instead segfaulting on every 5th attack I made. Also the aliens and
+floaters would often fail to initiate combat when I was walking right
+by them.
+
+There I encountered what I am pretty sure was a bug. I first tried to
+get the people around the president drunk, get my sneak skill up and
+kill him silently. I think it should have worked, but it didn't.
+Somewhat disappointed I tried to blow him up: then I discovered that
+somehow neither he, nor I take damage from explosions in our pants.
+At last I was forced to commit murder by superstimpaks. Finished the
+game by stuffing dynamite down the trousers of a researcher near the
+reactor and having the turrets shoot Frank Horrigan to the death.
+Once more the turrets didn't attack Horrigan immediately, though I am
+quite sure they are supposed to.
+
+
+FINAL BUGS?
+
+I am pretty sure I didn't get all the ending slides I was supposed
+to.
+
+
+REFERENCES
+
+[fallout2-ce] https://github.com/alexbatalov/fallout2-ce

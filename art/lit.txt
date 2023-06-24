@@ -1,0 +1,93 @@
+There used to be two larger lists: one programming books and the
+second for other literature, where I put pretty much anything that'd
+come to mind, while trying to avoid things that people would have
+read anyway. I have since merged the two lists, and rewritten them to
+list the books that left their mark on my brain: the sort of books I
+sometimes re-read, or at least consider doing so.
+
+
+PROGRAMMING
+
+- The C programming language, 2nd ed. -
+
+*The* book to learn C.
+
+- The AWK programming language -
+
+The name is very deceptive. awk(1) is known for being a very solid
+tool for working with strings. There's a lot of that in the book. And
+then there are implementations of some more known programs,
+algorithms and little languages, including an assembly for a
+fictional computer.
+
+- The practice of programming -
+
+Advice on programming pragmatically and effectively.
+
+- Learning Perl -
+
+It is what it says it is -- a decent introduction to Perl.
+
+- Programming in Haskell, 2nd ed. -
+
+Introductory Haskell book. Clear, concise and has good exercises.
+
+
+FICTION
+
+- H.P. Lovecraft -
+
+Somehow everyone I recommend Lovecraft to seems to dislike his work.
+I blame the translations. Lovecraft's use of the Engilsh language is,
+perhaps, the most unique I've seen or heard. To anyone who, like me,
+desperately looks for exactly that sort of things in his fiction, I
+recommend Lovecraft wholeheartedly.
+
+- The Flashman papers -
+
+I think the book series is popular in Great Britain (at least), but
+no one I've spoken to has ever heard of it. The series follows the
+misadventures of an "anti-Arthurian" British cavalryman through some
+significant (and some made-up) events of the Victorian era, German
+unification, American civil war and other events of the period.
+Probably only of much interest to people at least mildly interested
+in history.
+
+- The divine comedy -
+
+On one hand, the divine comedy could be viewed as the worst kind of
+political satire -- one written by members of one party to slander
+the members of the other. On the other hand, there is genuine
+religious concern for the health of one's soul: sin is condemned for
+what it is, while virtue is rewarded. The divine comedy is a book of
+great historic and philosophical significance.
+
+- 1984 -
+
+1984 is a "satire without humour". If Ingsoc satirises
+social/political movements, Winston satirises such
+"counter-movements". Orwell brings the us to hold contempt to
+everyone involved: the party for its senseless totalitarianism,
+Winston for his hatefulness, the proles for their ignorance. The
+book reminds us of what we become when we accept madness as normalcy.
+
+
+MISC
+
+- Bible -
+
+People who haven't read at least the Gospels are doing themselves a
+huge disfavour. Especially those that identify themselves as
+"atheists".
+
+- gittutorial(7), gittutorial-2(7) & gitcore-tutorial(7) -
+
+For years I couldn't understand Git, and somewhat hated it for that.
+I tried to learn from the git(1) man page, man pages for individual
+utilities, the official Web site, some books, even the
+Internet-tutorials -- to no avail. Then I read gittutorial(7) and
+some other pages it suggested, and it all "clicked" immediately.
+
+- /usr/share/doc directory in 4.4BSD-lite2 (and earlier) -
+
+Important things modern Unices fail to mention.
