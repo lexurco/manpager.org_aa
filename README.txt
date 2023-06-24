@@ -1,9 +1,11 @@
 Q: Who are you?
 A: I am Alexander Arkhipov, a Unix hacker from Moscow.
 
-Q: What's your email address?
-A: See "What do you call your Unix users?" and append "@alearx.org"
-   to your findings.
+Q: How do I contact you?
+A: finger arkhipov@alearx.org | grep -o 'Login: [^ ]*' |
+   sed 's/Login: \(.*\)/\1@alearx.org/'
+
+   You can use this string for both finger(1) and mail.
 
 Q: Do you have a PGP key?
 A: Yes, it's at ftp://alearx.org/pub/pgp/ -- pick the latest one.
@@ -12,14 +14,12 @@ A: Yes, it's at ftp://alearx.org/pub/pgp/ -- pick the latest one.
 Q: What services does alearx.org provide?
 A: Most services are at alearx.org. There is a mail server running,
    so you can send me mail to this server. I publish news via finger
-   (don't just finger the host itself, see instead see "What do you
-   call your Unix users?"), and you can read them via http and gopher
-   as well. I publish some files to the ftp server, and the pub
-   directory is mirrored to http and gopher. There are the http and
-   gopher sites, which are mostly identical. You can clone my git
-   repositories via anongit (see the /git/ directory on either www
-   or gopher site). I also maintain a boring site with a blog and a
-   resume at pro.alearx.org.
+   and you can read them via http and gopher as well. I publish some
+   files to the ftp server, and the pub directory is mirrored to http
+   and gopher. There are the http and gopher sites, which are mostly
+   identical. You can clone my git repositories via anongit (see the
+   /git/ directory on either www or gopher site). I also maintain a
+   boring site with a blog and a resume at pro.alearx.org.
 
 Q: What language(s) do you speak?
 A: Russian is my native language, but I speak English fluently. I
@@ -79,11 +79,9 @@ A: I got my first domain name, and started my first open-source
    That pretty much concludes the situation up until now.
 
 Q: What do you call your Unix users?
-A: I usually name my main user aa for my initials. I maintain users
-   for the more spammy mail called alexander (so if I were to
-   register on amazon, I'd give alexander at this domain). Most of
-   the other users, that I might maintain to drop some privileges for
-   certain tasks, are usually given short names like "tim" or "jean".
+A: I usually name my main user aa for my initials. Most of the other
+   users, that I might maintain to drop some privileges for certain
+   tasks, are usually given short names like "tim" or "jean".
 
 Q: What do you call your hosts?
 A: I distinguish between the name(s) by which the host is known on the
