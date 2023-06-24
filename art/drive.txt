@@ -1,0 +1,429 @@
+My new backup system
+
+Until recently my backups relied on connecting an HDD externally ever
+so often. Very manual and quite dangerous. Lately, however, I thought
+that since I am dealing with a hard drive this way, I might as well
+just install it inside my PC and use it for good -- I have two (or
+three even, if you count that second SSD I no longer use) SATA ports
+just hanging there!
+
+Well, I was partly correct to fear slightly the months before: my
+motherboard has been showing its age (especially after a small fire
+a few centimetres away), and as I was trying to attach the drive, one
+of the two ports fell off! To be more precise, the plastic did, and
+the important part followed, but thankfully the other three seem to
+hold on much better.
+
+Now, with 1 TB of extra space I went on with partly realising the
+things I always wanted to do.
+
+
+Initial setup
+
+I decided have one 500 GB general partition, and then see how large
+the others may need to be. I did the normal OpenBSD disc setup
+otherwise.
+
+# fdisk -iy sd2
+# disklabel -E sd2
+a
+partition to add: a
+offset:
+size: 500g
+FS type: 4.2BSD
+q
+# newfs sd2a
+# sysctl hw.disknames
+hw.disknames=sd0:<hash>,sd1:<hash>,sd2:<hash>
+# echo <hash>.a /data ffs rw,nodev,nosuid,softdep 1 2 >>/etc/fstab
+# mkdir -p /data && mount -o rw,nodev,nosuid,softdep /dev/sd2a /data
+# mkdir -p /data/aa && chown aa:aa /data/aa
+
+
+CVS
+
+I already had reposync (though it was on /var/cvs instead of the
+usual /cvs) set up, so I knew that 50 GB will be plenty:
+
+# disklabel -E sd2
+sd2> a
+partition to add: b
+offset:
+size: 50g
+FS type: 4.2BSD
+sd2*> q
+# newfs sd2b
+# mkdir -p /cvs && mount -o rw,nodev,nosuid,softdep /dev/sd2b /cvs
+# echo <hash>.b /packages ffs rw,nodev,nosuid,softdep 1 2 >>/etc/fstab
+# chown cvs:wsrc /cvs
+# chmod g+w /cvs
+# doas -u cvs crontab -e
+(stop the reposync cronjob)
+# rm /var/db/reposync/reposync.hash
+# doas -u cvs crontab -e
+...
+~ */2 * * * reposync -q rsync://ftp.somemirror.tld/cvs
+
+This sets the OpenBSD cvs changes to be synced to /cvs at a random
+minute of every second hour. Also I set CVSROOT to /cvs.
+
+
+Packages
+
+First I estimated how much space do I need for everything:
+
+$ cd /data/aa
+$ mkdir -p packages/snapshots/amd64
+$ rsync -aq --delete-delay --delete-updates \
+    rsync://ftp.somemirror.tld/OpenBSD/snapshots/packages/amd64/ \
+    packages/snapshots/amd64/
+$ du -hs packages
+
+Turns out, currently it's a little under 60 GB, so I set up a 150 GB
+partition:
+
+# disklabel -E sd2
+sd2> a
+partition to add: d
+offset:
+size: 150g
+FS type: 4.2BSD
+sd2*> q
+# newfs sd2d
+# mkdir -p /packages && mount -o rw,nodev,nosuid,softdep /dev/sd2d /packages
+# echo <hash>.d /packages ffs rw,nodev,nosuid,softdep 1 2 >>/etc/fstab
+# useradd -s/sbin/nologin -d/var/empty packages
+# chown packages:packages /packages
+# doas -u packages mkdir -p /packages/snapshots/amd64
+# doas -u packages crontab -e
+~ 0 * * * rsync -aq --delete-delay --delete-updates rsync://ftp.somemirror.tld/OpenBSD/snapshots/packages/amd64/ /packages/snapshots/amd64/
+
+Sorry for the last line's length!
+
+I also ran this command once manually, and set my PKG_PATH to
+/packages/snapshots/amd64.
+
+
+Local backups
+
+I decided to manage my local backups with rsnapshot:
+
+# cp /etc/rsnapshot.conf /etc/rsnapshot.conf.default
+# # I actually edited this in vi(1), of course.
+# # Also, some parts of it was provided by default, but heavily commented.
+# cat >/etc/rsnapshot.conf <<'x'
+config_version	1.2
+
+snapshot_root	/data/snapshots/
+
+sync_first	1
+
+cmd_rm		/bin/rm
+cmd_rsync	/usr/local/bin/rsync
+cmd_ssh		/usr/bin/ssh
+cmd_logger	/usr/bin/logger
+
+retain	quadhourly	6
+retain	daily		3
+retain	weekly		2
+retain	monthly		1
+
+# verbose 1 = quiet
+verbose		1
+loglevel	3
+logfile		/var/log/rsnapshot
+
+lockfile	/var/run/rsnapshot.pid
+
+one_fs	1
+
+link_dest	1
+
+exclude '/home/*/tmp/**'
+exclude '/home/*/Downloads/**'
+
+backup	/etc/			localshot/
+backup	/home/			localhost/
+backup	/usr/share/		localshot/
+backup	/usr/local/share/	localshot/
+backup	/var/			localshot/
+x
+
+# disklabel -E sd2
+sd2> a
+partition to add: e
+offset:
+size:
+FS type: 4.2BSD
+sd2*> q
+# newfs sd2e
+# mkdir -p /snapshots && mount -o rw,nodev,nosuid,softdep /dev/sd2a /snapshots
+# echo <hash>.e /snapshots ffs rw,nodev,nosuid,softdep 1 2 >>/etc/fstab
+# ed /etc/rsnapshot.conf <<'x'
+,s,	/data,	,
+wq
+x
+# crontab -e
+...
+0 */4 * * *			/usr/local/bin/rsnapshot sync && /usr/local/bin/rsnapshot quadhourly
+50 23 * * *			/usr/local/bin/rsnapshot sync && /usr/local/bin/rsnapshot quadhourly
+40 23 1,8,15,22,29 * *		/usr/local/bin/rsnapshot sync && /usr/local/bin/rsnapshot quadhourly
+30 23 1 * *			/usr/local/bin/rsnapshot sync && /usr/local/bin/rsnapshot quadhourly
+
+
+Server backups
+
+I don't want to ssh into the root account on my server, so instead
+we created a new user and modified the server's doas.conf to allow
+him executing "rsync" with no password.
+
+$ ssh alearx.org
+# su -
+# useradd -m snapshot
+# exit
+$ exit
+$ su -
+# # make sure to generate it passwordless
+# ssh-keygen -f /root/.ssh/id_rsa.snapshot
+# cp /root/.ssh/id_rsa.snapshot.pub /tmp/
+# chmod 744 /tmp/id_rsa.snapshot.pub
+# exit
+$ scp /tmp/id_rsa.snapshot.pub alearx.org:/tmp/
+$ ssh alearx.org
+$ su -
+# cat /tmp/id_rsa.snapshot.pub >>~snapshot/.ssh/authorized_keys
+# chown -R snapshot:snapshot ~snapshot
+# echo "permit nopass snapshot cmd rsync" >>/etc/doas.conf
+
+After that I wrote extra lines to rsnapshot.conf, mostly mimicing
+the old ones, but for the remote server, and using "doas rsync"
+instead of "rsync":
+
+cat >>/etc/rsnapshot.conf <<'x'
+
+backup	snapshot@alearx.org:/etc/		alearx.org/
+	+rsync_long_args=--rsync-path="doas /usr/local/bin/rsync"
+backup	snapshot@alearx.org:/home/		alearx.org/
+	+rsync_long_args=--rsync-path="doas /usr/local/bin/rsync"
+backup	snapshot@alearx.org:/root/		alearx.org/
+	+rsync_long_args=--rsync-path="doas /usr/local/bin/rsync"
+backup	snapshot@alearx.org:/usr/share/		alearx.org/
+	+rsync_long_args=--rsync-path="doas /usr/local/bin/rsync"
+backup	snapshot@alearx.org:/usr/local/share/	alearx.org/
+	+rsync_long_args=--rsync-path="doas /usr/local/bin/rsync"
+backup	snapshot@alearx.org:/var/		alearx.org/
+	+rsync_long_args=--rsync-path="doas /usr/local/bin/rsync"
+x
+
+
+Off-site backups
+
+Ideally you should have a machine I'd own in another building, then
+rsync(1) /snapshots/quadhourly.0 to it, and use rsnapshot(1) on
+that. Unfortunately, I have to satisfy myself with paying for some
+"cloud" storage, and uploading encrypted and signed tarballs there.
+
+Firstly, I allowed myself to archive quadhourly.0 without password:
+
+# cat >/etc/rsnapshot.mktar <<'x'
+#!/bin/sh
+
+[ $(id -u) = 0 ] || exit 1
+cd /snapshots/daily.0 || exit 1
+tar cf - .
+exit 0
+x
+# echo "permit nopass aa cmd /etc/rsnapshot.mktar"
+
+And then I created a special PGP keypair for passwordless signing:
+
+$ gpg --full-gen-key
+gpg (GnuPG) 2.2.41; Copyright (C) 2022 g10 Code GmbH
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Please select what kind of key you want:
+   (1) RSA and RSA (default)
+   (2) DSA and Elgamal
+   (3) DSA (sign only)
+   (4) RSA (sign only)
+  (14) Existing key from card
+Your selection? 4
+RSA keys may be between 1024 and 4096 bits long.
+What keysize do you want? (3072) 4096
+Requested keysize is 4096 bits
+Please specify how long the key should be valid.
+         0 = key does not expire
+      <n>  = key expires in n days
+      <n>w = key expires in n weeks
+      <n>m = key expires in n months
+      <n>y = key expires in n years
+Key is valid for? (0)
+Key does not expire at all
+Is this correct? (y/N) y
+
+GnuPG needs to construct a user ID to identify your key.
+
+Real name: Signer Sam
+Email address: signer@alearx.org
+...
+
+The main thing is to leave the password empty.
+
+The tarballs will be created via a makefile. To ensure that the
+makefile itself gets archived, I create it as a symlink to
+~/src/makefile.snap:
+
+$ cat >~/src/makefile.snap <<'x'
+all: snap
+
+REMOTE = remote
+
+snap: /snapshots/quadhourly.0
+	$(MAKE) clean
+	mkdir -p snap.d
+	doas /etc/rsnapshot.mktar 2>/dev/null | gzip |\
+	    gpg -er aa@manpager.net -su signer@alearx.org |\
+	    split -b3072m - snap.d/snap.tar.gz.gpg
+	touch snap
+
+rclone: snap
+	-if [ `rclone -q size $(REMOTE): | grep -o '[0-9]* Byte' |\
+	    grep -o '[0-9]*'` -gt $$((500 * 2^30)) ]; then\
+		rclone -q purge $(REMOTE):snap/old;\
+		rclone -q move --delete-empty-src-dirs $(REMOTE):snap/new\
+		    $(REMOTE):snap/old;\
+	fi 2>/dev/null
+	rclone -q --transfers 6 copy snap.d/\
+	    $(REMOTE):snap/new/snap`date +%Y%m%dt%H%M%S`/ 2>/dev/null
+	touch rclone
+
+clean:
+	-rm -rf snap.d
+
+distclean: clean
+	-rm -f snap rclone
+
+.PHONY: clean distclean
+x
+$ mkdir -p /data/aa/snap
+$ ln -sf ~/src/snap.mk /data/aa/snap/Makefile
+
+You might be wondering why exactly do I split the tarballs into 3 GB
+files. Two reasons:
+
+1. They can fit on FAT32 (so, flash drives usually) without further
+   actions;
+2. Some "cloud" storages seem to have a problem with large files;
+
+And after all that, I set up yet another cronjob:
+
+$ crontab -e
+...
+30 2 * * *	cd /data/aa/snap && make clean rclone
+
+
+Bitcoin
+
+I've been using bitcoin since 2022, when I was banned from paying for
+my domain name and my server via a bank card as a punishment for
+other people's crimes. All this time I did so through bitcoin-qt
+without much understanding what it actually does. After trying to
+read the documentation I am still not entirely sure. Bitcoin, I
+should note, is more of business software that good software.
+Consider for instance that several initial releases were for
+microsoft only. Unfortunately, the alternatives are less usable.
+
+The bitcoind configuration is in the following format:
+
+# comment
+cli-option-without-initial-dash=value
+
+We only really need to modify datadir to be somewhere under /data/:
+
+$ cat >~/.bitcoin/bitcoin.conf <<x
+datadir=/data/aa/bitcoin
+walletdir=$HOME/.bitcoin/wallets
+x
+$ mv ~/.bitcoin /data/aa/bitcoin
+$ mkdir ~/.bitcoin
+$ mv /data/aa/bitcoin/bitcoin.conf ~/.bitcoin/
+$ mv /data/aa/bitcoin/wallets ~/.bitcoin/
+
+bitcoind is the server and bitcoin-cli is the client. The latter has
+two sets of documentation (and some nonsense *.md files under
+/usr/local/share/doc/bitcoin/ that I refuse to consider such), both
+of which are pretty bad:
+
+1. First is command-line options documentation. Type either
+   "bitcoin-cli -?" or "man bitcoin-cli". Most of them are not
+   very useful.
+2. The API documentation, accessible by typing
+   "bitcoin-cli help [command]".
+
+Considering I don't need to automate it, the actual usage is very
+easy. The subcommands "send", "listunspend" and "getaddress" are
+the majority of what I need.
+
+Let's leave bitcoin-cli for later, and instead just download the
+blockchain.
+
+Firstly I actually opened bitcoin-qt, and disabled pruning -- it's
+been enabled through the GUI originally, so it only made sense to
+disable it this way. Turns out it just changed my
+/data/aa/bitcoin/settings.json to have '"prune": "0"' and
+'"prune-prev": "1907"'.
+
+Afterwards, I closed the GUI, and instead typed "bitcoind -reindex"
+and went to sleep. Wakefully, I made some calculations based on the
+progress thus far, and realised that the entire blockchain is a
+little under 500 GB! Straight after, I killed the daemon and
+restarted it with "prune=131072" in bitcoin.conf. Perhaps I should
+get an HDD just for bitcoin? It could as well be external since I'd
+only use it occasionally.
+
+Regardless, I at last deleted the bitcoin GUI along with the rest of
+qt:
+
+# pkg_delete bitcoin
+# pkg_add bitcoin--no_x11
+# pkg_delete -a
+
+
+Encrypted USB flash drive
+
+Right now my off-site backups rely on the fact that I have access to
+my private key and signer@'s public key. Of course I could just
+publish the latter, but the fact that my disc has my private key on
+it doesn't help at all in the event of its death. To deal with it I
+encrypted a USB flash drive, and used it to store the really
+important files/trees, such as ~/.ssh, ~/.gnupg, and ~/.bitcoin.
+Then the drive could be safely deposited at the office / friend's /
+aunt's / whatever.
+
+For OpenBSD the procedure is described quite well at
+https://www.openbsd.org/faq/faq14.html#softraidCrypto:
+
+# dd if=/dev/urandom of=/dev/rsd3c bs=1m
+# fdisk -iy sd3
+# disklabel -E sd3 # make an "a" partition of type RAID
+# bioctl -c C -l sd3a softraid0
+# dd if=/dev/zero of=/dev/sdc4c bs=1m count=1
+# fdisk -iy sd4
+# disklabel -E sd4 # make a normal "a" partition
+# newfs sd4a
+# mount /dev/sd4a /mnt
+# echo secret >/mnt/secret
+# umount /mnt
+# bioctl -d sd4
+# # to make sure it works, plug the stick out and in again
+# bioctl -c C -l sd3a softraid0
+# mount /dev/sd4a /mnt
+# cat /mnt/secret
+secret
+
+It worked! The rest is a simple matter of "cp -r".
+
+
+Copyright (c) 2023 Alexander Arkhipov <aa@alearx.org>
+Licensed under CC BY (https://creativecommons.org/licenses/by/4.0)
