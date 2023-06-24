@@ -86,7 +86,7 @@ A: I got my first domain name, and started my first open-source
    github user name to alearkh. The x in alearx is substitute for
    Greek chi.
 
-   That pretty much concludes the situation up until now.
+   That pretty much concludes the story up until now.
 
 Q: What do you call your Unix users?
 A: I usually name my main user aa for my initials. Most of the other
@@ -95,7 +95,7 @@ A: I usually name my main user aa for my initials. Most of the other
 
 Q: What do you call your hosts?
 A: I distinguish between the name(s) by which the host is known on the
-   local network, and among friends via /etc/hosts, and the
+   local network, or among friends via /etc/hosts, and the
    publicly-known FQDNs, which are set up via DNS, but also matter
    with web and smtp servers.
 
