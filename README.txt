@@ -19,10 +19,10 @@ Q: What services does alearx.org provide?
 A: Most services are at alearx.org.
 
    There is a mail server running. I publish news via finger (but
-   also http and gopher). I publish some files to the ftp server (but
+   also http and gopher). I publish some files to ftp and rsync (but
    also http and gopher). The http and gopher sites are almost
    identical. You can clone my git repositories via anongit (see the
-   /git/ directory on www or gopher site).
+   git/ directory on www or gopher site).
    
    I also maintain a boring site with a blog and a resume at
    pro.alearx.org.
