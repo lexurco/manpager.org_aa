@@ -1,13 +1,14 @@
 I find that it's easier to organise this README in a
 "question-answer" format. Questions are marked with "Q:", and answers
-with "A:".
+with "A:". People usually call such documents "FAQs", however there
+are some interesting questions asked infrequently.
 
 Q: Who are you?
 A: I am Alexander Arkhipov, a Unix hacker from Moscow.
 
 Q: How can I contact you?
-A: finger arkhipov@alearx.org | grep -o 'Login: [^ ]*' |
-   sed 's/Login: \(.*\)/\1@alearx.org/'
+A: h=alearx.org; finger arkhipov@$h | grep -o '^Login: aa ' |
+       head -1 | sed "s/Login: \([^ ]*\) /\1@$h/"
 
    You can use the output for both finger(1) and mail.
 
@@ -105,11 +106,12 @@ A: I distinguish between the name(s) by which the host is known on the
    "cflags", "ex", &c. The FQDNs are just whatever makes sense, while
    being short and memorable.
 
-Q: What about copying your works?
-A: When I first began programming, I was perplexed by copyright.
-   ("license my program!? it's not a book, or something, you know")
-   Then there was a period during which I was extremely confused, and
-   now I am just mildly confused.
+Q: What about copying your work?
+A: When I first began programming (and I mean actually programming
+   rathern than doing tasks at school/university), I was perplexed
+   by copyright. ("license my program!? it's not a book, or
+   something, you know") Then there was a period during which I was
+   extremely confused, and now I am just mildly confused.
 
    Inspecting existing licences I stumbled upon BSD0, which removes
    the attribution clause from the normal BSD licence. So I decided
@@ -124,7 +126,7 @@ A: When I first began programming, I was perplexed by copyright.
    have a licence-comment at the top of each source file.
 
    Now I believe that some of the text files I publish via gopher may
-   be subjects of copyright, so I now also have a small notice at the
+   be subjects of copyright, so I also have a small notice at the
    bottom of such files.
 
 Q: What sort of Unix do you run?
