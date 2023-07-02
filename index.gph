@@ -9,3 +9,5 @@ more information, please see the README file.
 [1|news|/news/|server|port]
 [1|ftp|/pub/|server|port]
 [1|git|/git/|server|port]
+
+[1|links|/ln.gph|server|port]
