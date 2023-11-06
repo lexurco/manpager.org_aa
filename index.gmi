@@ -5,6 +5,5 @@ I am Alexander. I write programs.
 
 => gemini://alearx.org/art/		articles
 => gemini://alearx.org/pub/		ftp
-=> gemini://alearx.org/git/		git
 
 => gemini://alearx.org/ln.gmi		links

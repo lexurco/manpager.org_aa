@@ -1,8 +1,8 @@
 You can send mail to aa at this domain. The PGP key is at
-ftp://alearx.org/pub/pgp/ (and equivalent http, gopher and rsync
-locations).
+ftp://alearx.org/pub/pgp/ (and equivalent http, gopher, gemini and
+rsync locations).
 
-Files are served via http, gopher, ftp, rsync and finger (try
+Files are served via http, gopher, ftp, gemini, rsync and finger (try
 `finger aa@alearx.org').
 
 I live in Moscow.
