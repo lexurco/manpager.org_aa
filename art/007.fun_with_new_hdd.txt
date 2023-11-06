@@ -423,7 +423,3 @@ https://www.openbsd.org/faq/faq14.html#softraidCrypto:
 secret
 
 It worked! The rest is a simple matter of "cp -r".
-
-
-Copyright (c) 2023 Alexander Arkhipov <aa@alearx.org>
-Licensed under CC BY (https://creativecommons.org/licenses/by/4.0)

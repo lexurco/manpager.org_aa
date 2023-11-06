@@ -15,8 +15,12 @@ limited with unveil(2) and pledge(2), meaning that their visibility
 of the file system is limited even further, and the amount of
 available syscalls is much less crazy too.
 
-Nevertheless, it should work on other Unices, just as long as X is
-available. There you might, however, have to do your own research on:
+Of course, you can get much better results by using a virtual
+machine, but it takes more time to set up, and everyone knows how
+to do it anyway.
+
+As you may have guessed, I am writing with OpenBSD in mind. On other
+Unices, you may have to research how to:
 
 - setting up sudo;
 - setting up disc quotas;
@@ -46,7 +50,7 @@ lp|someprinter:\
 Of course, if you do stuff like this, it only makes sense to
 have your firewall limit anotheruser's access to either most of the
 local network, or at least some addresses. And you don't have to stop
-there, but I will just for the moment.
+there, but I will for now.
 
 As for giving anotheruser an environment, where he may be *allowed*
 to do some things, you can use a simple script:
@@ -90,15 +94,9 @@ permit nopass mainuser as anotheruser cmd /bin/sh args -l
 
 to doas.conf.
 
-Once you successfully execute this script, you'll get an Xephyr (or
-is it an American program, and X is meant to be pronounced as Z? If
-it is, then it's too stupid, I'll just have to keep pronouncing X as
-a letter-name) window with fvwm inside. You can use fvwm to launch
-xterm, and you can use xterm to launch firefox. To see how well
-things are isolated, try copying some text in one X session (either
-the normal one, or the one inside Xephyr), and pasting it in the
-other -- you should fail!
-
-
-Copyright (c) 2023 Alexander Arkhipov <aa@alearx.org>
-Licensed under CC BY (https://creativecommons.org/licenses/by/4.0)
+Once you successfully execute this script, you'll get an Xephyr
+window with fvwm inside. You can use fvwm to launch xterm, and you
+can use xterm to launch firefox. To see how well things are
+isolated, try copying some text in one X session (either the normal
+one, or the one inside Xephyr), and pasting it in the other -- you
+should fail!

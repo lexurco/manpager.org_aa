@@ -1,0 +1,77 @@
+Ever since I installed Unix for the first time I've been on a
+constant quest to configure my keyboard as I wanted it, namely:
+
+- set up the Dvorak layout;
+- make super/menu/whatever useless bottom keys additional
+  alts/controls;
+- make caps an additional escape;
+- make the extra ISO key do something useful;
+- switch between English and Russian on scroll lock;
+
+Well, I'd still like to get a better board one day, but at least I
+now have the software where I want it to be, and there is no xmodmap
+trickery! I also managed to configure it like that on the TTY, but
+that's OpenBSD-specific, and on different systems you'll have to
+configure the TTY differently. Sorry!
+
+
+COMPOSE
+
+Have you ever wondered how do you input all those weird post-Romance
+letters like ö, ç and ñ? Or fancy unicode characters like ° (as in
+°C)? For a long time my method has been to simply copy-paste them
+from somewhere. Then I discovered the "compose" key: you press
+"compose", and two or more other keys in sequence, and get just some
+such characters. For instance:
+
+compose + ` + e = è
+
+The precice table of compose sequences will depend on the program.
+For instance there are such tables for X11, the TTY, and, for
+whatever reason, GTK. For X11 at least you can look them up in a path
+like /usr/X11R6/share/X11/locale/en_US.UTF-8/Compose. The initial
+part of this path will differ between systems, but I am sure you'll
+find something if you just type `find / -name Compose 2>/dev/null'.
+
+This is the perfect keysym to put on the extra ISO key.
+
+
+X11
+
+First type `man xkeyboard-config setxkbmap'. xkeyboard-config(7) is
+rather badly formatted, so you may have to expand your xterm a bit.
+
+Well, it's pretty simple beyond that, just use the options you need,
+for instance:
+
+setxkbmap -option # reset options
+setxkbmap -layout 'us(dvorak),ru' \
+    -option grp:sclk_toggle \
+    -option grp_led:scroll \
+    -option caps:escape
+    -option altwin:alt_win \
+    -option ctrl:menu_rctrl \
+    -option terminate:ctrl_alt_cksp \
+    -option compose:102
+
+In my particular case, the usual layout-switching via the grp:*
+option seems to work poorly for some reason, so I use the [xrus]
+program. It says it's for Russian-English switching specifically,
+but I think it should work with other languages as well.
+
+
+TTY (OpenBSD)
+
+The definitions are in the file /usr/include/dev/wscons/wsksymdef.h.
+And the manuals are wsconsctl(8) and wsconsctl.conf(5). For instance,
+here's what I have in /etc/wsconsctl.conf:
+
+keyboard1.encoding=us.dvorak
+keyboard1.map+='keycode 100 = Multi_key'
+keyboard1.map+='keysym Caps_Lock = Escape'
+keyboard1.map+='keysym Menu = Control_R'
+keyboard1.map+='keysym Meta_L = Alt_L'
+keyboard1.map+='keysym Meta_R = Alt_R'
+
+
+[xrus] http://lav.yar.ru/download/xruskb/

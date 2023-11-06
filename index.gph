@@ -1,7 +1,6 @@
-I am Alexander, the insane Unix hacker and owner of alearx.org. For
-more information, please see the README file.
+I am Alexander. I write programs.
 
-[0|README|/README.txt|server|port]
+[0|project|/project.txt|server|port]
 
 [1|articles|/art/|server|port]
 [0|plan|/plan.txt|server|port]

@@ -204,7 +204,3 @@ might have to do it. I don't even know.
 REFERENCES
 
 [blacklist checker] https://mxtoolbox.com/blacklists.aspx
-
-
-Copyright (c) 2023 Alexander Arkhipov <aa@alearx.org>
-Licensed under CC BY (https://creativecommons.org/licenses/by/4.0)

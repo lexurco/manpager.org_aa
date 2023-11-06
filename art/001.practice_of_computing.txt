@@ -1,0 +1,284 @@
+In this small text I discuss the choice of software, file
+hierarchies, and programming style. I find that these two topics are
+among the ones where our various educators (themselves influenced by
+similar misdesign and misdirection) cripple us the most, perhaps
+never even explicitly, or intentionally.
+
+
+SOFTWARE CHOICE
+
+In the year of 2023 people shouldn't have to use proprietary operating
+systems, or any other proprietary software. The few cases where the
+use of proprietary software is justified that I can think of are:
+
+- You are trying to reverse-engineer something.
+- You are being forced to -- that usually occurs when some "boss-man"
+  tries to get everyone to some lowest common denominator. If you are
+  reading this, you are probably better than that, and may wish to
+  leave this organisation (or whatever it is) soon.
+- You are forced to use weird hardware that requires weird software.
+  This one really sucks because it often has to do with international
+  politics, and lacks a common-sense solution.
+
+In the latter two situation you can often get somewhat around the
+restriction by running the untrusted-proprietary bits in a virtual
+machine.
+
+Even if you can't use a VM for everything, there's usually still
+nothing stopping you from running mostly-free software on your
+hardware. When I first started using free software, I used to play
+a lot of computer games, and had to run Micro$oft's office software
+(bloody university didn't accept my LaTeX reports!). I kept the
+latter mostrosity on a VM, and played to my heart's content using
+wine.
+
+Later, I stopped using the office because I graduated, and I stopped
+playing games because I found them so terribly boring compared to all
+the things that I could do now.
+
+
+FILE HIERARCHIES
+
+This document focuses on maintaining good file hierarchies under
+Unices, and so many consequent presumptions and opinions are taken.
+
+File hierarchies are hard. What makes it worse is that we've all been
+damaged from childhood with all those graphical file-managing tools
+that are both slower than the command line and promote some very bad
+habits. Natural consequences of such damage are even getting
+standardised: there are a lot of programs that create weirdly-named
+dirs like ~/Downloads and ~/Documents, and there is the XDG base dir
+specification. It is my opinion that file hierarchies should
+facilitate three things primarily:
+
+1. It should be easy to navigate to the file by typing its name.
+2. It should be easy to manipulate files via scripts.
+3. It should be easy to perform similar operations on a group of
+   closely-related files, e.g. with only one or two commands all my
+   configs for $program should be able to get archived, be copied,
+   change permissions and ownership, etc.
+
+Generally I assume that the user knows where most of his (important)
+files are and can find the rest with find(1) or locate(1) or
+something.
+
+Firstly, please limit your file names to [A-Za-z0-9_.-]. Avoid
+minuses (dashes/whatever) as the first character (or at all,
+really): they cause all sorts of problems like "rm -i *" becoming
+"rm -i -f file1 file2". Minuses are OK for semantic purposes,
+however, such as naming files after dates ("2013-05-05.photo.jpg"
+(though depending on how it will be used it might be fine to name it
+"20130505.photo.jpg")), or versioning them ("prog-0.4.tar"). If you
+use them for separating "fields" in filenames, consider using periods
+instead. There are also some characters, which are not mandated by
+POSIX, but which are still commonly used by some programs: comma (,)
+and colon (:) are used in maildirs, I believe some GNU utilities like
+tilde (~), I think systemd uses at (@), and there's lost+found on
+many (most?) Unix filesystems, and test(1) can often be invoked as
+`[', or more specifically, `/bin/['. I'd advise against using those
+for normal files, however. Be conservative with numbers and
+underscores and only capitalise letters with VERY IMPROTANT files
+that should be sorted first like README, Makefile, CHANGES, INSTALL
+etc. That is not to name directories in your ~ so: they already are
+sorted because the "unimportant" files have a period as the first
+character.
+
+Naturally, keep the names short. Of course if you have some, e.g.,
+photo saved on your disc, but you only open it once a decade, it's
+fine to give it a longer, more descriptive name like
+"1998.tortoise_on_red_sea_beach.png" (do tortoises live on the Red
+sea?). On the other hand if you have a copy of "the brave soldier
+Schweik" on the disc, there is no need to name it
+"the_fateful_adventures_of_the_brave_soldier_schweik_during_the_world_war_by_jaroslav_hashek.pdf"
+that doesn't even fit the line! Instead, Name it "schweik.pdf" and be
+done with it.
+
+Also, people coming from the Micro Soft-Disasterous Operating System
+(MS-DOS) and its successors tend to name files like `foo.txt' rather
+than just `foo'. On Unix this is usually unnecessary, except for web
+servers and similar, which can quickly evaluate content-type based on
+the filename, rather than magic numbers.
+
+Another thing to avoid is not to create too many separate
+files/directories just for the purpose of doing so. In particular, I
+sometimes see the following:
+
+- People abuse the directories like foo.conf.d/, by putting each small
+  $thing into a separate file, without any real logical reason to do so.
+- People write programs, where each single function is its own file.
+
+I'd avoid symlinks: they are sometimes necessary between files, but
+directory symlinks are evil. Just imagine how many files have been
+wrongly `rm -rf'ed since the introduction of symlinks!
+
+
+PROGRAMMING
+
+This advice mostly relates to C. I am very inconsistant with my
+sh, awk and perl styles, and I don't have one for other programming
+languages.
+
+There are already a lot of good stylistic references for C (and
+probably for other languages, but we'll stick with C here). Good ones
+in particular are OpenBSD's style(9) (google it on
+http://man.openbsd.org) and the style employed by K&R in their book
+"the C programming language". A lot of good advice is offered in
+"the practice of programming" by Brian Kernighan and Rob Pike. Do
+read those for a more complete overview of good style. Here I shall
+instead go over some techniques that are critically underemployed
+and some mistakes that
+
+I find it very helpful to compile with flags
+`-std=c99 -Wall -Wextra -pedantic -O0 -g'. Of course, this is just
+for the debugging purposes, for "real" compilation you'd probably
+remove at least the `-O0 -g'.
+
+A common advice is to use linters. I use them *sometimes*. I often
+ignore them, however, because they tend to misreport more than find
+actual issues.
+
+Portable programs tend to not only cause much less pain, but to also
+be better written in general, so try to stay within mainstream, only
+using local extensions when necessary. Definitely do not rely on a
+particular compiler's or standard library's quirk.
+
+In the vast majority of cases code alignment (except indentation) is
+a huge waste of effort that doesn't even pay off, so I usually avoid
+that.
+
+When possible I position my functions starting on their own line like
+so:
+
+	int
+	foo(void)
+	...
+
+this makes the code very easily grep(1)pable (grep ^foo\( *.c)). And
+no need for ctags! Generally it is worth writing in a way that'll
+make moving around simpler.
+
+Side effects should generally be avoided, except for some
+well-understood idioms like *a++ = *b++.
+
+There are many programs whose portability depends upon preprocessor
+instructions like #if and #ifdef. It is easily observed that even
+in small number they can bring much confusion. Avoid such constructs
+when at all possible. Even the debug macros are often not really
+necessary. Compare the two:
+
+	#define DEBUG
+
+	#ifdef DEBUG
+	printf("this is a debug statement\n");
+	#endif /* DEBUG */
+
+and
+
+	enum = { DEBUG = 1 };
+
+	if (DEBUG)
+		printf("this is a debug statement\n");
+
+If we set DEBUG to 0 in the second case, the compiler will optimise
+the statement away, but it'll warn us if we mess up the actual debug
+code.
+
+Comments are often used in silly ways. In fact some people even have
+their editors configured to make the comments dimmer because so many
+of them are useless. In fact they should have them configured to make
+comments brighter and/or bolder. Comments are very powerful and
+should therefore be used with much discretion. Good comments include
+the ones that go briefly over functions and global data, and the ones
+which help the reader to understand a complicated algorithm used in
+code. They should definitely not state the obvious, or be seen as a
+compensation for bad code, which should be rewritten instead. Such
+comments have a tendency of eventually contradicting the code, which
+is the great danger of comments.
+
+Here are examples of really bad comments that I've actually seen
+(actual text changed):
+
+	/*******************************************************
+	 *                                                     *
+	 *                                                     *
+	 *                 MY HELLO WORLD ROUTINE              *
+	 *                                                     *
+	 *                                                     *
+	 *******************************************************/
+
+	do_stuff() //!!!
+
+	/**** Maybe I should draw more asterisks... ****/
+
+And another thing is to definitely not just leave code commented out,
+at least not after debugging. Though if you do write a debugging
+function, leave it there, for you might need it in the future.
+
+There are a lot of reasons to divide programs into multiple files. Do
+create as many as are needed, especially for portability, and when
+compilation becomes too long. Do not, however put things into new files
+just for the sake of it. Many programmers seem to think that if they put
+every single function into its own file it'll somehow make things
+better. In fact it only makes their code a navigational nightmare.
+
+Speaking of multiple files, don't include files in your included files.
+There is, of course a "protection" often employ to avoid cycles:
+
+	#ifndef THISFILE_H
+	#define THISFILE_H
+	#include "a.h"
+	#include "b.h"
+	/* file contents... */
+	#endif /* THISFILE_H */
+
+which does not, however, protect your preprocessor from processing
+it over and over again Instead simply comment what files should be
+included before that one and let the actual includer worry about
+what to include:
+
+	/*
+	 * Description of what the file is for.
+	 *
+	 * #include "a.h"
+	 * #include "b.h"
+	 * #include "thisfile.h"
+	 */
+
+A thing that I, thankfully, see more rarely, but still do sometimes
+is variables getting burdened with as many qualifiers as the
+programmer managed to come up with. In truth, there should be as
+*few* qualifiers as possible. In particular many people seem to make
+variables unsigned for no reason other than that they should never be
+negative. That not only encourages integer overflow errors, but can
+make the code much more complicated. Observe, for instance, this
+piece of code, which calculates the column, corresponding to nth
+character in some line:
+
+	...
+	for (off = 0, col = -1; off <= n; off++)
+		if (s[off] == '\t')
+			col = ((col+1)/8 + 1) * 8 - 1;
+		else if (isprint(s[off]))
+			col++;
+	...
+
+col here should never end up negative, however it is still useful to
+assign it to -1 initially to simplify the program, and possibly to
+indicate an error.
+
+Lastly there's a construct I rarely see talked about:
+
+	if (bad)
+		return 0;
+	else {
+		/* The rest of the function's code here. */
+	}
+
+Are such constructs the reason why people insist on two (or one
+ultrawide) monitors, and writing lines hundreds of columns wide? A
+much better version is very simple:
+
+	if (bad)
+		return 0;
+
+	/* The rest of the function's code here. */

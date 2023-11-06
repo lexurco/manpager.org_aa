@@ -1,0 +1,20 @@
+Entry: 2023-11-06
+
+Given the error margin of 24 hours, it's been precicely 3 months since I
+last wrote here. You can't really tell, however, because among other
+things I nuked the news/ directory and feed.ass file. The only news
+source here now is .plan (and plan.txt). To see if I made any changes
+you can do something like this:
+
+$ $some_cool_network_client "$@" | grep '^Entry: '
+
+The art/ directory has been changed as well: I've updated and removed
+some old articles, and changed the file names like so:
+
+000.the_first_file.txt
+001.the_second_file.txt
+
+The ordering is somewhat arbitrary now, because I don't remember what
+order I actually wrote them in. Also, this scheme totally fails if I
+end up writing more than 1000 of those, but in such case I will have
+to start using several directories anyway.

@@ -8,11 +8,11 @@ sometimes re-read, or at least consider doing so.
 
 PROGRAMMING
 
-- The C programming language, 2nd ed. -
+- The C Programming Language -
 
 *The* book to learn C.
 
-- The AWK programming language -
+- The AWK Programming Language -
 
 The name is very deceptive. awk(1) is known for being a very solid
 tool for working with strings. There's a lot of that in the book. And
@@ -20,7 +20,7 @@ then there are implementations of some more known programs,
 algorithms and little languages, including an assembly for a
 fictional computer.
 
-- The practice of programming -
+- The Practice of Programming -
 
 Advice on programming pragmatically and effectively.
 
@@ -53,7 +53,7 @@ unification, American civil war and other events of the period.
 Probably only of much interest to people at least mildly interested
 in history.
 
-- The divine comedy -
+- The Divine Comedy -
 
 On one hand, the divine comedy could be viewed as the worst kind of
 political satire -- one written by members of one party to slander
@@ -91,7 +91,3 @@ some other pages it suggested, and it all "clicked" immediately.
 - /usr/share/doc directory in 4.4BSD-lite2 (and earlier) -
 
 Important things modern Unices fail to mention.
-
-
-Copyright (c) 2023 Alexander Arkhipov <aa@alearx.org>
-Licensed under CC BY (https://creativecommons.org/licenses/by/4.0)

@@ -1,0 +1,71 @@
+Recently (perhaps 2-3 months before writing this) I automated my
+backups, replacing the previous manual arrangement. Some of the files
+I need to backup are on a remote server, so there's been a small
+challenge of setting up ssh in a way that is restricted, yet usable
+to automated tools.
+
+My initial solution was the obvious one: set up a special user, who
+is permitted to "doas rsync" without a password. That's still a bit
+dangerous, however, since it gives that user write access to the
+entire file system.
+
+Well, it turns out that a more correct solution is already
+distributed with rsync! rrsync is a python script, which:
+
+1. sanitises the rsync server command, according to options;
+2. changes directory before running the command;
+
+So, for instance, if you want a certain key to only be able to read
+the /var directory via rsync, all you need to do is add the following
+to your authorized_keys:
+
+rescrict,command="/usr/bin/doas /usr/local/bin/rsync -ro /var" KEYTYPE KEY COMMENT
+
+and the following to doas.conf:
+
+permin nopass setenv { SSH_ORIGINAL_COMMAND } :backup cmd /usr/local/bin/rrsync args -ro /var
+
+Of course, your remote user will need to be in the backup group, and
+if you use sudo instead of doas, you'll need to configure it
+differently.
+
+Also note, that to, e.g., list files under host:/var with that key,
+you now need to invoke rsync as
+
+$ rsync -e 'ssh -i /path/to/key' host:./
+
+If instead of host:./ you write host:/var/, rrsync will simply refuse
+to serve you. For instance, in rsnapshot.conf you may now have a line
+like this:
+
+backup	host:./	host/var/	+ssh_args=-i/root/.ssh/id_rsa.host:var
+
+
+WARNING ABOUT SSH-AGENT
+
+There is a huge caveat with ssh-agent and such setup (I may have had
+to restore one of my backups after realising it :). Imagine you have
+a script like this:
+
+#!/bin/sh
+
+rsync -rpt --remove-source-files \
+    -e "ssh -i $HOME/.ssh/id_rsa.nopass" "$@" host:./ /some/path/
+
+Now imagine that this script is usually invoked via cron, but
+occasionally you invoke it by hand. Imagine further that one time as
+you do, ssh-agent has already cached your normal password-protected
+key for running arbitrary commands. Well, you just nuked your remote
+~! Even in spite of -i!
+
+Maybe there's something in ssh_config to prevent it, but it's also
+simple to fix by unsetting SSH_AGENT_PID and SSH_AUTH_SOCK like so:
+
+#!/bin/sh
+
+unset SSH_AGENT_PID SSH_AUTH_SOCK
+
+rsync -rpt --remove-source-files \
+    -e "ssh -i $HOME/.ssh/id_rsa.nopass" "$@" host:./ /some/path/
+
+Now this script will get restricted with rrsync every time.
