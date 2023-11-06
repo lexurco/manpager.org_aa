@@ -18,3 +18,7 @@ The ordering is somewhat arbitrary now, because I don't remember what
 order I actually wrote them in. Also, this scheme totally fails if I
 end up writing more than 1000 of those, but in such case I will have
 to start using several directories anyway.
+
+The site now also serves files over gemini. There's no git/ directory
+yet because to my knowledge, there isn't a gemini-git-interface
+program yet, and I didn't manage to write one in half an hour. :)
