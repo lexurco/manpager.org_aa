@@ -1,11 +1,9 @@
 I am Alexander. I write programs.
 
 [0|project|/project.txt|server|port]
+[0|plan|/plan.txt|server|port]
 
 [1|articles|/art/|server|port]
-[0|plan|/plan.txt|server|port]
-[0|feed|/feed.ass|server|port]
-[1|news|/news/|server|port]
 [1|ftp|/pub/|server|port]
 [1|git|/git/|server|port]
 
