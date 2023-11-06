@@ -22,3 +22,7 @@ to start using several directories anyway.
 The site now also serves files over gemini. There's no git/ directory
 yet because to my knowledge, there isn't a gemini-git-interface
 program yet, and I didn't manage to write one in half an hour. :)
+
+And one more bit of news: I'll be retiring the git protocol "soon",
+so in future there'll only be anonymous ssh access to my repos.
+Probably not this year, though.
