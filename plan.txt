@@ -26,3 +26,9 @@ program yet, and I didn't manage to write one in half an hour. :)
 And one more bit of news: I'll be retiring the git protocol "soon",
 so in future there'll only be anonymous ssh access to my repos.
 Probably not this year, though.
+
+
+Entry: 2023-11-08
+
+Yesterday (2023-11-07) I've had some fun with VMM and VNC. Finished
+the article today: art/010.x11_isolation.txt.

@@ -1,0 +1,175 @@
+A more honest name for this file would have been
+"010.quick_intro_to_vmd_and_vnc.txt", but firstly, it looks a bit
+random, and secondly, I am writing it in continuation of
+002.x11_isolation.txt.
+
+vmd is a daemon that interfaces with VMM, OpenBSD's hypervisor, and
+VNC is a graphical desktop-sharing protocol, which can be used a bit
+more securely than simply forwarding X11. I'll first set up a small
+OpenBSD guest with vmd, then show how to run graphical software on
+that guest, and finally conclude with an example of running VNC on
+localhost.
+
+For details on why I wrote these two articles in the first place,
+please see LONGER CONCLUSION.
+
+
+SETTING UP VMD
+
+Look up your $dns_server in /etc/resolv.conf.
+
+# sysctl net.inet.ip.forwarding=1
+# echo net.inet.ip.forwarding=1 >>/etc/sysctl.conf
+# cat <<x >>/etc/pf.conf
+match out on egress from 100.64.0.0/10 to any nat-to (egress)
+pass in proto { udp tcp } from 100.64.0.0/10 to any port domain \
+    rdr-to $dns_server port domain
+x
+# pfctl -f /etc/pf.conf
+# rcttl enable vmd
+# rcctl start vmd
+$ vmctl create -s 20G obsd.qcow2
+$ ftp https://cdn.openbsd.org/pub/OpenBSD/7.4/amd64/install74.img
+# vmctl start -Lc -m 1G -d install74.img -d obsd.qcow2 obsd
+
+Install as usual, but make sure to use sd1, rather than sd0. Also,
+you'll probably want at least a static IPv4.
+
+Let's quickly test xterm through X11 forwarding:
+
+1. enable X11Forwarding in guest:/etc/ssh/sshd_config.
+2. Reload sshd.
+3. Enable ForwardX11 in host:/etc/ssh/ssh_config
+4. Look up the guest's IP with ifconfig, if you don't know it yet.
+5. On host run `ssh -Y $guest_user@$gust_ip xterm'.
+
+It might take a couple of seconds, but eventually you should see a
+new xterm pop up. You'll even be able to paste text from your host
+xterms into the guest xterm, maybe with some delay. Interestingly,
+same holds true if you use -X instead of -Y.
+
+It's even possible to run a full desktop this way via Xephyr:
+
+host$ ssh -Y $guest_user@$guest_ip Xephyr :2 -screen 1280x720
+guest$ DISPLAY=:2 twm &
+
+Anyway, although X11 forwarding is pretty cool, it's not exactly what
+we (i.e. I) want. For that we'll have to use VNC:
+
+host# pkg_add tigervnc
+guest# pkg_add tigervnc
+
+The package is documented via man pages such as vncviewer(1), and the
+web site www.tigervnc.org. Running it is pretty simple:
+
+guest$ vncserver
+guest$ vncserver -list
+host$ vncviewer $guest_ip:1
+
+To limit the VNC server somewhat, we can use the vncconfig(1)
+command, or the ~/.vnc/config file:
+
+guest$ DISPLAY=:1 vncconfig SendCutText=0 SendPrimary=0
+
+And vncviewer also has many parameters, settable at command line and
+in $HOME/.vnc/default.tigervnc:
+
+host$ vncviewer -acceptclipboard=0 -setprimary=0 -sendclipboard=0 \
+    -sendprimary=0 $guest_ip:1
+
+Once you are done, you can ^C the vncviewer and `vncserver -kill :1'
+the server.
+
+A cool thing you can do in Bourne-like shells is use a password
+manager so that you don't have to type it manually (in this example I
+use my password manager gpm):
+
+user2$ VNC_PASSWORD=$(gpm show vnc) vncviewer $guest_ip:1
+
+The VNC_PASSWORD=foo bit will not show in ps(1).
+
+
+VNC ON LOCALHOST
+
+Of course, now it's trivial to just use VNC on localhost, as a
+"better/worse Xephyr":
+
+user1$ vncserver -localhost
+user2$ vncviewer -setprimary=0 -sendprimary=0 :1
+
+
+SHORT CONCLUSION
+
+This article is somewhat of a followup to my previous article
+002.x11_isolation.txt. As often the case with similar articles, I
+found that setup to be quite trivial. Surprisingly, VNC turned out to
+be both easier to set-up, and offer better opportunities (e.g., I can
+share clipboard, but separate primary). Hopefully it'll turn less
+buggy as well. Should I turn out to need still more, I can easily set
+up {a,some} virtual machine{,s} with vmd.
+
+
+LONGER CONCLUSION
+
+I must have started running free software operating systems either
+in 2020 or 2021. Some of my concerns were:
+
+1. Games.
+2. The evil university people forcing me to use proprietary software
+   on my personal hardware.
+3. My web browser constantly running complex proprietary JavaScript
+   programs.
+
+For 1. I quickly found that I can run stuff through wine, then that
+there are a lot of free-software games (inc. reverse-engineered), and
+then there was so much fun stuff I could do with my computer, games
+became boring.
+
+2. ended quite naturally. While it lasted, I ran whatever needed in
+VMs.
+
+The problem 3. became a bit better, as I found that I don't need to
+use the Internet as much anymore, and when I do have to use the web,
+I can often do so with lynx. It has not, however, disappeared
+entirely, so I started thinking about mitigating the problem.
+
+Here's a partial list of bad things that JavaScript can do to me:
+
+1. Exploit a vulnerability in the browser, and get access to
+   important files, such as ~/.ssh/*. It has happened before: there
+   used to be PDF files that would do that with Firefox's vulnerable
+   PDF reader.
+2. Snoop on my X11 selections.
+3. Snoop on my keypresses.
+4. It'll leave all sorts of nonsensical config files all over my ~!
+   4.1. More seriously, it may choke my filesystem with garbage
+        files.
+5. It'll make unsolicited network requests.
+
+OK, 1. is solved by launching the browser with another user, or using
+OpenBSD, which unveil()s Chromium and Firefox. 4. is similar, except
+it's only solved by running the browser as another user, and setting
+a quota.
+
+5. is similar: run as a different user, and limit him with firewall.
+
+Another approach to 1., 2. and 5. is to use a virtual machine.
+
+2. and 3., however, aren't as simple: both require to isolate the
+web browser from all the other X11 clients, a thing that X is
+notoriously bad at. If you try to research the question, first answer
+you are likely to come upon (at least that was so in my case) is to
+use Xephyr. I've described the method in 002.x11_isolation.txt. The
+problem is that Xephyr is primarily debug software -- the sort of
+thing that you run the window manager you just wrote, without closing
+the one you're working in. If you use it long enough, you'll find
+that it's very buggy, and not very flexible.
+
+I am much more hopeful about my future use of VNC: it was created
+with long-running "real" sessions in mind, so it should hopefully be
+a bit more robust.
+
+Finally I tried out OpenBSD's hypervisor. I don't think I'll be using
+it too much in the near future after all, but I'm glad I did anyway.
+There seem to be a lot fewer options than with Linux's Qemu/KVM
+stack, but the ones are there are much better documented.
