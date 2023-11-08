@@ -161,9 +161,9 @@ notoriously bad at. If you try to research the question, first answer
 you are likely to come upon (at least that was so in my case) is to
 use Xephyr. I've described the method in 002.x11_isolation.txt. The
 problem is that Xephyr is primarily debug software -- the sort of
-thing that you run the window manager you just wrote, without closing
-the one you're working in. If you use it long enough, you'll find
-that it's very buggy, and not very flexible.
+thing that you use to run the window manager you just wrote, without
+closing the one you're working in. If you use it long enough, you'll
+find that it's very buggy, and not very flexible.
 
 I am much more hopeful about my future use of VNC: it was created
 with long-running "real" sessions in mind, so it should hopefully be
