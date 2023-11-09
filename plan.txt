@@ -32,3 +32,18 @@ Entry: 2023-11-08
 
 Yesterday (2023-11-07) I've had some fun with VMM and VNC. Finished
 the article today: art/010.x11_isolation.txt.
+
+
+Entry: 2023-11-09
+
+I drew a thing! Such excitement for that might sound strange coming
+from a 23-years-old man -- I know that it might because when I
+studied at university there were a few people surprised to learn that
+I don't draw things. I now sometimes sketch things in my notebook,
+usually when I am bored, but can't/don't want to read a book, and a
+few of them look decent. That's probably my first decent digital
+drawing.
+
+It's an ouroboros made with bitmap(1), it's on ftp at
+/pub/bitmaps/ouroboros{,.png}. The png version now decorates my
+stagit pages (rather than the old 'aa' logo).
