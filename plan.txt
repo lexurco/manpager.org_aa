@@ -47,3 +47,10 @@ drawing.
 It's an ouroboros made with bitmap(1), it's on ftp at
 /pub/bitmaps/ouroboros{,.png}. The png version now decorates my
 stagit pages (rather than the old 'aa' logo).
+
+
+Entry: 2023-11-10
+
+Finished probably the last article for a while:
+art/011.building_this_site.txt; also added my geek code (but not to
+.plan, only to index.{gph,gmi,html}).
