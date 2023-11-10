@@ -1,4 +1,4 @@
-I am Alexander. Here's my geek code:
+I am Alexander.
 
 -----BEGIN GEEK CODE BLOCK-----
 Version: 3.1
