@@ -1,1 +1,3 @@
+=> index.gmi	index
+
 None yet :(

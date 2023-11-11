@@ -7,11 +7,11 @@ GCS d+@ s+:- a-- C++ UB+++(L++$) P+ L+(++$) E--- W- !N>+ o? K? w---
 !r?>+++ !y
 -----END GEEK CODE BLOCK-----
 
-[0|project|/project.txt|server|port]
-[0|plan|/plan.txt|server|port]
+[0|project|project.txt|server|port]
+[0|plan|plan.txt|server|port]
 
-[1|articles|/art/|server|port]
-[1|ftp|/pub/|server|port]
-[1|git|/git/|server|port]
+[1|articles|art/|server|port]
+[1|ftp|pub/|server|port]
+[1|git|git/|server|port]
 
-[1|links|/ln.gph|server|port]
+[1|links|ln.gph|server|port]
