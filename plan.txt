@@ -54,3 +54,10 @@ Entry: 2023-11-10
 Finished probably the last article for a while:
 art/011.building_this_site.txt; also added my geek code (but not to
 .plan, only to index.{gph,gmi,html}).
+
+
+Entry: 2023-11-16
+
+This weekend (2023-11-18 and 19), I'll be doing more stupid
+incompatible changes to the site. Most services will be unavailable
+for some time, and after you may have to update some URLs.
