@@ -61,3 +61,16 @@ Entry: 2023-11-16
 This weekend (2023-11-18 and 19), I'll be doing more stupid
 incompatible changes to the site. Most services will be unavailable
 for some time, and after you may have to update some URLs.
+
+
+Entry: 2023-11-18
+
+Finished most of the changes that I wanted to do: that moved most
+files and directories into usr/aa/, and changed the canonical URL to
+manpager.org (that's the fifth :|; I am planning to keep
+manpager.net, and alearx.org permanently aliased to it, however).
+Unfortunately, that's about as much as I am willing to do at the
+moment, so there's once again to gopher/www/gemini interface to git.
+That's all right: I'll make proper description files for my projects
+before Monday, and probably figure something out with git next
+weekend.
