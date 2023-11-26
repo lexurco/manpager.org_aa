@@ -1,19 +1,13 @@
-You can send mail to aa at this domain. The PGP key is at
-ftp://alearx.org/pub/pgp/ (and equivalent http, gopher, gemini and
-rsync locations).
-
-Files are served via http, gopher, ftp, gemini, rsync and finger (try
-`finger aa@alearx.org').
+PGP key at {ftp,rsync,https}://alearx.org/pub/usr/aa/pgp/.
 
 I live in Moscow.
 
 I speak Russian and English. I also speak some German, French and
 Esperanto.
 
-Currently I am spending most of my free time learning French. When I
-think I speak sufficiently well, I think of either continuing with
-some other human language, or learning lisp.
+Currently I am spending most of my free time learning French.
 
-In my enslaved time (that's 6 to 17 from Monday to Friday) I'm working
-as a researcher for the information security company Infotecs. I will
-consider changing for some remote employment.
+In my enslaved time (that's 6 to 17 from Monday to Friday, Moscow
+time) I'm working as a researcher for the information security
+company Infotecs. I will consider changing for some remote
+employment.
