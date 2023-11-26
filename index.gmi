@@ -13,6 +13,5 @@ GCS d+@ s+:- a-- C++ UB+++(L++$) P+ L+(++$) E--- W- !N>+ o? K? w---
 => plan.txt	plan
 
 => art/		articles
-=> pub/		ftp
 
 => ln.gmi	links
