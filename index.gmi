@@ -12,6 +12,7 @@ GCS d+@ s+:- a-- C++ UB+++(L++$) P+ L+(++$) E--- W- !N>+ o? K? w---
 => project.txt	project
 => plan.txt	plan
 
+=> hacks/	hacks
 => art/		articles
 
 => ln.gmi	links

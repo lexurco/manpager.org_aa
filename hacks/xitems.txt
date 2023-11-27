@@ -1,0 +1,14 @@
+xitems is a pop-up menu for X, written in C with Xlib.
+
+It receives a menu description on stdin, and prints the chosen item on
+stdout. Items can be selected with mouse, or with keyboard shortcuts.
+
+It's one of the first X11 clients I've written, so the design may be a
+bit rough.
+
+You can download one of the releases at [0], clone the git repository
+via [1], or browse it at [2].
+
+[0] {ftp,rsync,https}://manpager.org/pub/usr/aa/xitems/
+[1] ssh://anon@manpager.org/xitems
+[2] https://git.manpager.org/?action=summary&path=xitems.git

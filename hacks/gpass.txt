@@ -1,0 +1,19 @@
+gpass is a secure passphrase generator, written in C. The generated
+passphrases look like so:
+
+chirping landing luckily dollar gnat expert
+
+By default, passphrases are generated with pretty high entropy of 70,
+and the EFF long dictionary [0] is used, but that's configurable at run
+time.
+
+The program uses arc4random(3), so it should work on BSD and GNU
+systems.
+
+You can download one of the releases at [1], clone the git repository
+via [2], or browse it at [3].
+
+[0] https://www.eff.org/files/2016/07/18/eff_large_wordlist.txt
+[1] {ftp,rsync,https}://manpager.org/pub/usr/aa/gpass/
+[2] ssh://anon@manpager.org/gpass
+[3] https://git.manpager.org/?action=summary&path=gpass.git

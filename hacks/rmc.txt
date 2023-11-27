@@ -1,0 +1,15 @@
+rmc is a mailcap [0] implementation, written in perl.
+
+rmc is intended to be more general-purpose, than the original RFC
+suggests, and be useful in situations where xdg-open [1] may be
+useful. The implementation is not 100%-compliant: some parts of the RFC
+are intentionally violated.
+
+You can download one of the releases at [2], clone the git repository
+via [3], or browse it at [4].
+
+[0] https://www.rfc-editor.org/info/rfc1524
+[1] https://www.freedesktop.org/wiki/Software/xdg-utils/
+[2] {ftp,rsync,https}://manpager.org/pub/usr/aa/rmc
+[3] ssh://anon@manpager.org/rmc
+[4] https://git.manpager.org/?action=summary&path=rmc.git
