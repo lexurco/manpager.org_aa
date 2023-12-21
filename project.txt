@@ -24,32 +24,6 @@ All non-PGP public keys should be signed with the current PGP key.
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA512
 
-untrusted comment: aa's signify key for signing releases public key
-RWT1N+nQC5RCJhtGNbzcDfreCC1ZtiXVc1DZvmj0W3uB2iIPeAHu804x
------BEGIN PGP SIGNATURE-----
-
-iIYEARYKAC4WIQRNcPB/AgKDY/6GZPv3PWiA/VyM4wUCZWlIGxAcYWFAbWFucGFn
-ZXIub3JnAAoJEPc9aID9XIzjM1ABAINJeVZ96FipgrkV7QTa5Tmx34I8Az/Sha85
-VjE9r6NGAQDwTo2S2o4q5pMG6NOUjvq251jub18qDt5MgpgtNbEBBw==
-=ah1D
------END PGP SIGNATURE-----
-
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA512
-
-untrusted comment: aa's signify keypair for backups public key
-RWTxpxXeihqeYVkVE+iGemiiW8ESQ9y1VFiwi1+dFN7gXGJrCitSgQnD
------BEGIN PGP SIGNATURE-----
-
-iIYEARYKAC4WIQRNcPB/AgKDY/6GZPv3PWiA/VyM4wUCZWlJLBAcYWFAbWFucGFn
-ZXIub3JnAAoJEPc9aID9XIzjxTkBAO3i8+rggubYngMNtSuIG+hqwe4udQOk5DeW
-mZgTZK1hAQDkH32xUef+zk4qPd1GIsp4B93LFxxum83heZZlEbrJDg==
-=INTf
------END PGP SIGNATURE-----
-
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA512
-
 Current public SSH key.
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICx3YBh00uGzhV3EcEsKfc9oqNcJlJoxDZy/E8pM8Pjb aa@manpager.org
 -----BEGIN PGP SIGNATURE-----
