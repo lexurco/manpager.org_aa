@@ -1,0 +1,13 @@
+2023-12-30
+
+Originally, I created this site with a "blogs are kind of stupid"
+mindset. So instead I decided to publish "articles" in the art
+directory. That has worked pretty well, especially because I only had
+little time to maintain any of it.
+
+Things are different now. Firstly, I have some thoughts that I'd like to
+share, which I can't really put into an "article". More importantly, I
+expect to finally have time to do that, and other things I always wanted
+to do.
+
+In short, thoughts is the "blog" part of this site.

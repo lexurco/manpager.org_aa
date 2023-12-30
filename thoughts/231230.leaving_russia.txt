@@ -1,0 +1,60 @@
+Russia is one of those states that maintain the feudal ritual of
+forcing the unwilling young men into its army. Russia is also well-known
+for being corrupt to the bones. A common result is that conscripts
+return with nothing but horror stories. Another common result is that
+they don't return at all.
+
+Even at school I was terrified of that. I frequently thought about
+emigration (not just to avoid this "service", but to live a better life
+generally), but I also realised that before I am able to do that, I need
+some short-term survival plan. So I went to university. I didn't care
+much about getting a bachelor's in Russia, but I didn't think of it much
+either: students are exempt from conscription, and that's most of what I
+cared about.
+
+There was another side effect of this lack of thinking: I used to have
+silly ideas about employment. Only by observing other students, did I
+learn that it is actually possible to be employed, even at a relatively
+well-paying job, before graduating. (Seems obvious now...) Of course,
+when I tried to get myself employed, I failed, but that led me to
+investigate this "Linux" thing. With no exaggeration, installing Arch
+(and I don't even like the distro anymore) on my machine has improved my
+entire life! I finally learned that autodidactism is better than the
+best teachers in the world, people who give advice usually don't know
+much themselves, and people who tell that something is impossible are
+not to be trusted.
+
+That was summer of 2021, a year before my graduation. February 2022
+seemed quite normal, until it didn't. Shortly afterwards lots of Russian
+IT and CS specialists have left the country. In response the government
+issued a decree exempting such professionals from conscription. I jumped
+at the opportunity, and instead of going to a master's programme (I
+*hated* education in Russia at that point), got myself employed
+full-time at a (well-known within Russia) company called "InfoTeCS"
+(I'll just call it "infotecs").
+
+Even before the interview at infotecs, however, I knew that I was likely
+to dislike working there. (I was right.) Mostly I just wanted:
+
+1. not to get conscripted;
+2. to have my resume say "have been employed at a well-known company
+   for a year-or-so";
+
+Of course, by the time I had reached point 2. (August 2023), the new
+conscription campaign was dangerously close, so I decided to wait until
+January 2024. Towards November I realised that I have almost enough
+money, and almost enough information to finally leave Russia! I was also
+influenced by being "invited" to the military commissariat in spite of
+my exemption, and by the many horror stories of people who acted upon
+these "invitations". So in December I began preparing documents and
+things, and contacting people I know who live outside of Russia. I knew
+there was going to be a bonus at the end of December, so I only actually
+filed my resignation letter on 29th (that's yesterday), and will stay
+employed until January 12 (as required by law).
+
+If all goes right I'll soon be moving to Georgia for a year. The reasons
+are that it's relatively cheap, and Russians are allowed to stay in
+Georgia for a year without a residence permit. I am thinking of trying
+to find new employment after that, not before. So, hopefully, I'll be
+able to spend a large portion of January learning new things and writing
+software.

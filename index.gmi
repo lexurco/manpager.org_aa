@@ -14,5 +14,6 @@ GCS d+@ s+:- a-- C++ UB+++(L++$) P+ L+(++$) E--- W- !N>+ o? K? w---
 
 => hacks/	hacks
 => art/		articles
+=> thoughts/	thoughts
 
 => ln.gmi	links
