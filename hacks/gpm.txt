@@ -1,24 +1,13 @@
-gpm is a Unix password-manager, similar to pass [0].
+gpm is a Unix secret (or password) manager, similar to pass [0], written
+in perl.
 
-The motivation for writing this was as follows:
+Unlike pass, gpm doesn't depend on bash, and supports arbitrary
+directory depth (>=0) instead of always insisting on the depth of 1.
 
-1. not having a dependency on bash;
-2. storing each password in /path/to/storage/foo.gpg, rather than
-   /path/to/storage/foo/bar.gpg;
-
-For those, who actually like the way pass handles 2., I may in the
-future add optional support for subdirectories of arbitrary depth. For
-now, I recommend checking out plass [1].
-
-The script is curretly written in Bourne shell, with no non-POSIX
-dependencies to my knowledge. I may in future rewrite it in perl to
-avoid things like passwords showing up in ps(1).
-
-You can download one of the releases at [2], clone the git repository
-via [3], or browse it at [4].
+You can download one of the releases at [1], clone the git repository
+via [2], or browse it at [3].
 
 [0] https://www.passwordstore.org/
-[1] https://projects.omarpolo.com/plass.html
-[2] {ftp,rsync,https}://manpager.org/pub/usr/aa/gpm/
-[3] ssh://anon@manpager.org/gpm
-[4] https://git.manpager.org/?action=summary&path=gpm.git
+[1] {ftp,rsync,https}://manpager.org/pub/usr/aa/gpm/
+[2] ssh://anon@git.manpager.org/gpm
+[3] https://git.manpager.org/?action=summary&path=gpm.git

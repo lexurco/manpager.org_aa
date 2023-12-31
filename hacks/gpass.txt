@@ -15,5 +15,5 @@ via [2], or browse it at [3].
 
 [0] https://www.eff.org/files/2016/07/18/eff_large_wordlist.txt
 [1] {ftp,rsync,https}://manpager.org/pub/usr/aa/gpass/
-[2] ssh://anon@manpager.org/gpass
+[2] ssh://anon@git.manpager.org/gpass
 [3] https://git.manpager.org/?action=summary&path=gpass.git

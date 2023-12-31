@@ -5,5 +5,5 @@ You can download one of the releases at [0], clone the git repository
 via [1], or browse it at [2].
 
 [0] {ftp,rsync,https}://manpager.org/pub/usr/aa/rene/
-[1] ssh://anon@manpager.org/rene
+[1] ssh://anon@git.manpager.org/rene
 [2] https://git.manpager.org/?action=summary&path=rene.git

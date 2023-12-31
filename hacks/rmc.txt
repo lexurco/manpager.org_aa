@@ -11,5 +11,5 @@ via [3], or browse it at [4].
 [0] https://www.rfc-editor.org/info/rfc1524
 [1] https://www.freedesktop.org/wiki/Software/xdg-utils/
 [2] {ftp,rsync,https}://manpager.org/pub/usr/aa/rmc
-[3] ssh://anon@manpager.org/rmc
+[3] ssh://anon@git.manpager.org/rmc
 [4] https://git.manpager.org/?action=summary&path=rmc.git
