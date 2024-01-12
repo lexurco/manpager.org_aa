@@ -9,6 +9,8 @@ GCS d+@ s+:- a-- C++ UB+++(L++$) P+ L+(++$) E--- W- !N>+ o? K? w---
 -----END GEEK CODE BLOCK-----
 ```
 
+Content under CC-BY-4.0.
+
 => project.txt	project
 => plan.txt	plan
 
