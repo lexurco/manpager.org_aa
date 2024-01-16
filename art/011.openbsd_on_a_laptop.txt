@@ -1,0 +1,239 @@
+Until now (Jan 2024) my main machine has been a desktop computer the
+size of a small coffee table. At last, I got rid of the thing, replacing
+it instead with a thinkpad t440p. I mostly settled on this particular
+model because I should be able to libreboot it at some point.
+
+Previously the only other laptop I "seriously" used was a pretty
+horrible one without even an ethernet slot. I've had to use that thing
+at the university. Didn't care about it much. So, setting things up
+properly on a laptop is new to me, and that's what the article is mostly
+about.
+
+
+SOME SPECS
+
+The processor is a dual-core Core i5 (with hyperthreading (meh)). There
+are a lot of external interfaces, including 2xUSB 3.0, 2xUSB 2.0 (one
+with power), SD and CD-ROM (theoretically replaceable with a normal hard
+drive) slots, VGA, mini-DP, an audio interface, and it should be
+possible to attach a dock station.
+
+Inside there are two SODIMM DDR3 memory slots, a 2.5" (haven't measured
+the height, but it "should be enough" for most things) and an M.2 2242.
+The Wi-Fi module is replaceable too.
+
+For my setup, I installed 16GB RAM, a 500GB M.2 SSD and a 2TB 2.5" SSD.
+The laptop is very simple to {dis,re}assemble -- only a couple of
+screws after removing the battery, then one small screw for most
+modules.
+
+The cooling system makes a bit of noise when compiling stuff, or using
+{firefox,{ungoogled-,}chromium}.
+
+Compiling /usr/src without clang, or /usr/xenocara takes about an hour.
+
+
+FULL DISK ENCRYPTION FOR TWO DISKS
+
+Installing the system on the 500GB disk with FDE was very simple -- I
+just had to answer a few questions. The only modification to the
+partition scheme that I made was adding a 1GB /hole partition after
+/home. /hole is the equivalent of /home for the
+{firefox,ungoogled-chromium}-running user (see 002.x11_isolation.txt and
+010.x11_isolation_2.txt).
+
+Setting up the second drive with FDE, and automatic mounting is a bit
+more complicated. It has to be done with rc.local or rc.securelevel and
+rc.shutdown (see rc(8)).
+
+Having a second disk also allowed me to setup /altroot (see daily(8)).
+Since I am backing up stuff on the first drive to the second one, I
+encrypted both with passphrases that I could recall from memory, and
+type on a keyboard. The second passphrase, I also put into the file
+(owner root:wheel, permissions 0600) /root/$UUID.pass. I consider
+storing my passphrase like this to be acceptable, since to get access
+to it you either have to become root on my machine, or guess that disk's
+passphrase, at which point all my precautions are in vain anyway.
+
+After that I simply followed the bioctl(8) man page and
+https://www.openbsd.org/faq/faq14.html.
+
+My rc scripts look like this:
+
+  /etc/rc.local.subr:
+  DUID=REDACTED		# real device to be decrypted
+  DUID2=REDACTED	# pseudo-device after decryption
+  PASSFILE=/root/$DUID.pass
+  FS=`awk '!/^#/ && $1 ~ /^'$DUID2'\.[abd-p]$/ && $4 !~ /xx/ {print $1}' /etc/fstab`
+  
+  mount_second() {
+  	bioctl -c C -p $PASSFILE -l $DUID.a softraid0
+  	for f in $FS; do fsck -p $f && mount -s $f; done
+  }
+  
+  umount_second() {
+  	for f in $FS; do umount -f $f; done
+  	bioctl -d $DUID2
+  }
+
+  /etc/rc.local:
+  #!/bin/ksh
+  
+  . /etc/rc.local.subr
+  
+  printf "mounting second disk..."
+  mount_second
+  echo " done!"
+  
+  printf "setting permissions on /dev/speaker..."
+  set_perms_speaker
+  echo " done!"
+
+  /etc/rc.shutdown:
+  #!/bin/ksh
+  
+  . /etc/rc.local.subr
+  
+  printf "unmounting second disk..."
+  umount_second
+  echo " done!"
+
+I could probably come up with better names, but it works alright.
+
+
+POWER MANAGEMENT AND SCREEN LOCKING
+
+All things pretty important on a laptop. There are some settings you can
+do in the BIOS, but there aren't many of them. Luckily, operating
+systems are allowed to manage these things. On OpenBSD the "manager" is
+called apmd(8). I start it like this:
+
+  # rcctl enable apmd
+  # rcctl set apmd flags -a # to avoid auto-suspend when not on battery
+  # rcctl start apmd
+
+And then it can be controlled with commands like that:
+
+  $ apm -a
+  1
+  $ apm -s
+
+But usually:
+
+  $ apm
+  Battery state: high, 100% remaining, unknown life estimate
+  AC adapter state: connected
+  Performance adjustment mode: auto (9999 MHz)
+  $ zzz
+
+That's the basic usage, now for advanced jargon. Computers may have
+three power saving modes (from least saving to most saving): standby,
+suspend and hibernate. Standby and suspend are mostly equivalent (on
+most hardware at least), but apm can execute different scripts depending
+on which you use. When you hibernate, you actually turn off the power
+completely. The only difference from a shutdown is that you also save
+your RAM to swap (which is one of the reasons why you should have some
+swap even though you shouldn't use it as "extra RAM"). If you hibernate,
+and you use disk encryption, you'll have to enter your password or
+insert your keydisk upon reboot as well, however most other things
+should get restarted from the point where you left them. In all three
+power saving modes your processes will stop execution until you resume,
+typically by pressing the power button.
+
+Another thing that has three power-saving modes (standby, suspend and
+off) is the monitor(s). These can be controlled via wscons and xset.
+For more info on wscons read wscons(4), wsconsctl(8), wsconsctl.conf(5)
+and https://www.openbsd.org/faq/faq7.html. For more info on xset, read
+xset(1). There are also some X11 programs that know how to blank the
+screen, particularly xlock(1).
+
+Speaking of xlock(1), you'll probably want to configure screen locking,
+and you'll want it to work well with power saving features. Generally,
+screen locking is achieved on OpenBSD by writing 'xidle -timeout 600 &'
+in ~/.xsession, and never logging in a bare VT, except for a short
+duration. If you also wish to lock those, see lock(1), and maybe try
+to configure it with tmux(1).
+
+It is very important to lock the screen upon suspend (and other apm
+events). To do so, write a script like that to
+/etc/apm/{suspend,hibernate,standby} (and don't forget to make the three
+files executable):
+
+  #!/bin/sh
+  /usr/bin/pkill -USR1 xidle
+
+Also for this reason, I advice against setting any of the "delayed"
+xlock options, including: -delay -lockdelay -dpms{standby,suspend,off}.
+For instance, if you invoke xlock with -lockdelay 5 upon suspending,
+upon resuming there will *still* be a window for passwordless unlocking
+in spite of more than 5 real time seconds passing.
+
+Finally, you'll probably also want to configure your window manager to
+run xlock on some keypresses. cwm is configured to run xlock on
+CM-Delete by default.
+
+
+NETWORK
+
+Ethernet just works.
+
+Wireless requires iwm(4) firmware, downloaded by fw_update(8).
+
+Here's how you use an iwm interface on OpenBSD (read ifconfig(8),
+hostname.if(5) and https://www.openbsd.org/faq/faq6.html):
+
+  # ifconfig
+  ...
+  iwm0: flags=...
+  ...
+  # ifconfig iwm0 up
+  # ifconfig iwm0 scan
+  ...
+		  nwid SomeNetwork ...
+  ...
+  # ifconfig iwm0 nwid SomeNetwork wpakey p@$$w0rd # or s/nwid/join/
+  # ifconfig iwm0 inet autoconf
+  # cat >/etc/hostname.iwm0 <<-x
+      nwid SomeNetwork wpakey p@$$w0rd
+      inet autoconf
+  x
+
+faq6.html also gives an example of configuring a trunk interface to
+automatically switch between ethernet and wi-fi. An small caveat is
+that only the trunk interface needs DHCP, all the aggregated
+interfaces should have DHCP turned off.
+
+
+PCSPEAKER
+
+My previous machine had no speakers and couldn't beep at me. That alone
+makes my new ThinkPad superior. If you, for some odd reason, don't like
+the beeps you can turn them off with mixerctl(8):
+
+  # mixerctl | grep 'spkr.*_mute='
+  outputs.spkr_mute=off
+  outputs.spkr2_mute=off
+  # mixerctl outputs.spkr_mute=on outputs.spkr2_mute=on
+
+With xset(1):
+
+  $ xset -b
+
+Or directly inside xterm(1):
+
+  $ xterm -vb
+
+Of course, unlike those puny SysV-based/like systems like GNU/Linux,
+OpenBSD has the speaker(4) driver for making music with those things. I
+currently use it as my alarm clock, and am actively thinking of other
+uses. Here are a few examples:
+
+  # # to avoid root, you can do something like `chmod g+w /dev/speaker'
+  # # and `chown :operator /dev/speaker', assuming you are in the
+  # # operator group.
+  #
+  # # borrowed from the FreeBSD forums
+  # echo 'O0 G G G L8 D#. L16 A# L4 G L8 D#. L16 A# L2 G' >/dev/speaker
+  #
+  # # alternatively, use at(1)
+  # while [ `date +%H` -ne 7 ]; do sleep 60; done; dmesg >/dev/speaker
