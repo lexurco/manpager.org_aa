@@ -1,0 +1,9 @@
+goget is a network download utility similar to wget.
+
+I wrote it in Go, mostly in order to experiment with concurrency and
+interfaces, two of the language's important features. goget already
+supports downloading files in parallel, and I am planning to add support
+for as many protocols as possible.
+
+git clone ssh://anon@git.manpager.org/goget
+https://git.manpager.org/?action=summary&path=goget.git
