@@ -85,3 +85,11 @@ Two changes:
    https://manpager.org/usr/aa/thoughs/000000.intro.txt.
 2. I completely rewrote gpm in perl. There are lots of improvements.
    See the CHANGES file.
+
+
+Entry: 2024-02-26
+
+A couple of new additions:
+
+1. art/012.backups_on_unix.txt
+2. thoughts/240226.after_a_month_in_georgia.txt
