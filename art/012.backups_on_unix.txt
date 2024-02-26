@@ -1,0 +1,172 @@
+Created: 2024-02-11
+
+My first real experience with Unix has been through Linux in the Summer
+of 2021. I fell in love with the system immediately. One thing that has
+both bothered and fascinated me since was the ease of doing an
+"rm -rf /*". For this reason, I almost immediately became curious about
+doing periodic, automatic (as otherwise it's just extra work, and
+I have a tendency of "forgetting" to do such things) full system backups
+(and more mundane things like mail backups).
+
+With that introduction out of the way, I'd like to discuss the various
+ways to make good backups on Unix systems. I already discussed it some
+in previous articles. Perhaps I should just call this thing I have a
+"blog". Oh, well.
+
+
+BUT WHERE DO I BACK UP TO?
+
+Good question. It really depends on your situation. I'll assume you
+have one Unix machine with one disk, most of which you'd like to back
+up. If you have multiple machines, you should be able to adapt the
+advice here to your situation.
+
+When discussing backups, people like using phrases like "off-site",
+"cold storage", and whatever else. This is all good descriptive
+terminology that lets you describe your backup system in detail. For a
+higher-level overview I like to instead think of disaster and
+catastrophy backups.
+
+When I say that I have a "disaster backup" I mean something like "I am
+worried my main disk may go bad, but if it does, I have the data copied
+to another one nearby".
+
+When I say I have a "catastrophy backup" I mean something like "I am
+worried something might melt/burn/explode/disappear without a trace,
+killing both my main disk and my disaster backup, so I also store my
+backups in another building".
+
+Personally, I don't actually have that much hardware, so I store my
+disaster backups on a local partition, and I push my catastrophy
+backups to a cloud storage. I backup some of my really important
+passwords, keys and other information (i.e. things I need to access my
+other backups) to hardcopy and USB sticks. "Hardcopy" just means I print
+or write it to an actual piece of paper. I also like printing my keys as
+QR codes. If you do that make sure only you and people you can trust can
+access your hardcopies and flash drives. You may or may not find
+Shamir's secret sharing scheme useful.
+
+
+BRIEF OVERVIEW OF UTILITIES
+
+The classic (and very rudimentary) backup utilities are tar and cpio.
+Then there are the 4.4BSD tools dump and restore. A less canonical (but
+very helpful) utility is rsync. Then there are some more recent, and
+more specialised tools like [rsnapshot] and [borg]. Finally there's
+[tarsnap].
+
+
+TAR AND CPIO (AND PAX)
+
+At the very rudimentary level you can make backups by just creating a
+huge tarball every time:
+
+# cd / && tar cf - bin etc home root sbin usr var ... >/backups/backup.tar
+
+It's trivial to add compression and encryption:
+
+# tar cf - ... | gzip | gpg -e >/backups/backup.tar.gz.gpg
+
+Or to immediately unpack the backup, perhaps over network:
+
+# tar cf - ... | ssh user@host 'cd /path/to/dir && tar xf -'
+
+cpio and pax work the same as tar, except they require you to pass a
+list of files on stdin:
+
+# find dir1 dir2 -type f | cpio -H ustar >/backups.tar
+
+People usually just use tar.
+
+The approach has two huge disadvantages:
+
+1. Inodes are ignored, therefore if a file has multiple hard links, it
+   will be stored (and later restored) as multiple objects.
+2. You are backing the entire filesystem up each time, instead of only
+   doing a full backup once in a while, and saving changes after.
+
+It also has one huge advantage: tar is everywhere.
+
+
+DUMP AND RESTORE
+
+Dump is originally a 4.4BSD utility. Unlike tar it works directly with
+filesystem, and so can take into account hard links. Also, unlike tar,
+dump uses levels from 0 to 9, meaning that on level 0 the entire
+filesystem is backed up, but on further levels it only backs up files
+modified/created since the last previous-level dump. dump doesn't
+require the filesystem to be mounted. Dump can be helpful to duplicate
+a filesystem onto another partition, which makes it handy to, e.g.,
+enlarge partitions. This is an example from OpenBSD FAQ:
+
+# cd /SRC && dump 0f - . | (cd /DST && restore -rf - )
+
+Of course, like tar, dump can be used with compression and encryption
+Unix style:
+
+# dump -0 -f - /path/to/mountpoint | gzip | gpg -e >dump.gz.gpg
+
+The biggest limitation of dump is that it's only available for a few
+filesystems. Namely you can get dump to work on BSD systems with a UFS
+(a.k.a. FFS, FFS2 or 4.4BSD filesystem) partition managed by that OS.
+dump won't, for example, work with HAMMER on DragonFlyBSD. There is a
+version of dump for the Linux filesystems ext, but the project doesn't
+seem to be very active. For the "fancy" filesystems like zfs, xfs and
+btrfs, there's often a built-in snapshot feature, so you may want to
+look into that.
+
+
+RSYNC
+
+The rsync utility is very well known for its ability to recursively
+clone file hierarchies, while preserving a lot of metadata, and only
+transferring changes. Rsync has a couple of less-known flags: -H to
+preserve hard links, and --link-dest=DIR, to create files as hardlinks
+to DIR when unchanged. The [rsnapshot] utility nicely wraps that
+behaviour.
+
+A couple of disadvantages are that you can't compress or encrypt
+backups made with rsync (unless you also tar it or something).
+
+
+SPECIALISED FREE SOFTWARE TOOLS
+
+If you'd like to have your cake and eat it too, you may wish to consider
+something like [borg] or [restic]. These tools handle all at once:
+
+- Full and incremental backups
+- Compression
+- Encryption
+- Both networks and local disks
+- Cross platform
+
+So if you need all, or almost all of that, it might be a good choice.
+
+
+TARSNAP
+
+Tarsnap is similar to the above, but it's a commercial project by the
+FreeBSD developer Colin Percival. It needs a client and a server to run.
+The client is available in source code form, but under a proprietary
+licence. The server isn't.
+
+
+CONCLUSIONS
+
+No backup system will ever cover you completely, but a good one will
+cover you mostly. Depending on what filesystem you use, you might be
+able to take advantage of a utility like dump, or snapshots. If all the
+hosts involved are fully trusted, you may just use rsync (perhaps via
+rsnapshot). Finally, if none of that works you may want to use a more
+specialised tool.
+
+And if you just need to do some quick thing like "transfer the entirety
+of X to Y", you shouldn't forget of things like tar and dd.
+
+
+REFERENCES
+
+[rsnapshot] https://rsnapshot.org/
+[borg] https://www.borgbackup.org/
+[tarsnap] https://www.tarsnap.org/
+[restic] https://restic.net
