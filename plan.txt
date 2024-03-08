@@ -93,3 +93,16 @@ A couple of new additions:
 
 1. art/012.backups_on_unix.txt
 2. thoughts/240226.after_a_month_in_georgia.txt
+
+
+Entry: 2024-03-08
+
+Wanted to write an article on using locales and wchar_t in C, but ended
+up writing two:
+
+1. https://manpager.org/usr/aa/art/013.from_ascii_to_unicode.txt
+   gopher://manpager.org/0/usr/aa/art/013.from_ascii_to_unicode.txt
+   gemini://manpager.org/usr/aa/art/013.from_ascii_to_unicode.txt
+2. https://manpager.org/usr/aa/art/014.locales_in_c.txt
+   gopher://manpager.org/0/usr/aa/art/014.locales_in_c.txt
+   gemini://manpager.org/usr/aa/art/014.locales_in_c.txt
