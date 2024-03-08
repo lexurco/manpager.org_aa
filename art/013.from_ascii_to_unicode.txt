@@ -1,0 +1,224 @@
+Title: From ASCII to Unicode
+Author: Alexander Arkhipov <aa@manpager.org>
+Created: 2024-03-07
+Modified: 2024-03-08
+
+Every programmer should know how character encoding works.
+Unfortunately, this topic is rarely brought up, and so many developers
+remain ignorant about an issue that's not actually that hard. So let's
+discuss character encodings!
+
+Character encoding is a problem much older than computers are. Telegraph
+used to have some really wacky 5-bit encodings, that included one or
+more special characters for changing character set on the fly. If you
+are curious, google is your friend.
+
+But in this article I will start with the oldest encodings relevant to
+modern computer systems -- ASCII. After I'll write a little about some
+of the pre-Unicode encodings, and, finally, Unicode and UTF-8.
+
+
+ASCII
+
+ASCII stands for American Standard Code for Information Interchange.
+It's an 7-bit (though bytes on modern hardware are 8 bits, more on that
+later) character encoding invented a very long time ago for paper
+teletypes (or teletypes, as they were known then).  If you don't know
+what a paper teletype is, imagine a typewriter (if you don't know what a
+typewriter is, I'm afraid I can't help you). Now imagine that it's
+plugged into a computer. And that it's used for all input/output. You
+just imagined a paper teletype!
+
+So, if you ever wondered why ASCII has so many weird control characters
+(like what even are DC[1-4] (0x11-0x14)?), this is part of the reason.
+Particularly, to this day we have to deal with two end-of-line
+characters: carriage return (0x0d) and line feed (0x0a). Well, that's
+because on typewriters characters were printed using a piece called
+"carriage". Instead of just pressing "Enter" like on modern computers,
+you would have to first return the carriage to the first column
+(carriage return), and then move it down one line (line feed). The idea
+moved on to teletypes.
+
+Let's now look at the technical properties of ASCII. To do that,
+consider the following table of each ASCII character with corresponding
+binary code:
+
+  0000 0000  nul      0010 0000  sp   0100 0000  @    0110 0000  `
+  0000 0001  soh      0010 0001  !    0100 0001  A    0110 0001  a
+  0000 0010  stx      0010 0010  "    0100 0010  B    0110 0010  b
+  0000 0011  etx      0010 0011  #    0100 0011  C    0110 0011  c
+  0000 0100  eot      0010 0100  $    0100 0100  D    0110 0100  d
+  0000 0101  enq      0010 0101  %    0100 0101  E    0110 0101  e
+  0000 0110  ack      0010 0110  &    0100 0110  F    0110 0110  f
+  0000 0111  bel      0010 0111  '    0100 0111  G    0110 0111  g
+  0000 1000  bs       0010 1000  (    0100 1000  H    0110 1000  h
+  0000 1001  ht       0010 1001  )    0100 1001  I    0110 1001  i
+  0000 1010  lf       0010 1010  *    0100 1010  J    0110 1010  j
+  0000 1011  vt       0010 1011  +    0100 1011  K    0110 1011  k
+  0000 1100  ff       0010 1100  ,    0100 1100  L    0110 1100  l
+  0000 1101  cr       0010 1101  -    0100 1101  M    0110 1101  m
+  0000 1110  so       0010 1110  .    0100 1110  N    0110 1110  n
+  0000 1111  si       0010 1111  /    0100 1111  O    0110 1111  o
+  0001 0000  dle      0011 0000  0    0101 0000  P    0111 0000  p
+  0001 0001  dc1      0011 0001  1    0101 0001  Q    0111 0001  q
+  0001 0010  dc2      0011 0010  2    0101 0010  R    0111 0010  r
+  0001 0011  dc3      0011 0011  3    0101 0011  S    0111 0011  s
+  0001 0100  dc4      0011 0100  4    0101 0100  T    0111 0100  t
+  0001 0101  nak      0011 0101  5    0101 0101  U    0111 0101  u
+  0001 0110  syn      0011 0110  6    0101 0110  V    0111 0110  v
+  0001 0111  etb      0011 0111  7    0101 0111  W    0111 0111  w
+  0001 1000  can      0011 1000  8    0101 1000  X    0111 1000  x
+  0001 1001  em       0011 1001  9    0101 1001  Y    0111 1001  y
+  0001 1010  sub      0011 1010  :    0101 1010  Z    0111 1010  z
+  0001 1011  esc      0011 1011  ;    0101 1011  [    0111 1011  {
+  0001 1100  fs       0011 1100  <    0101 1100  \    0111 1100  |
+  0001 1101  gs       0011 1101  =    0101 1101  ]    0111 1101  }
+  0001 1110  rs       0011 1110  >    0101 1110  ^    0111 1110  ~
+  0001 1111  us       0011 1111  ?    0101 1111  _    0111 1111  del
+
+In no particular order, here are some observations:
+
+- The most significant bit is always 0.
+- del (127/0x7f/0b01111111) and everything below sp (32/0x20/0b00100000)
+  are control characters. All others are normal printable characters.
+- It's obvious why '0' != 0. In fact, nul == 0. If you want to compare
+  numeric characters with integers, subtract '0' (e.g. '9'-'0' == 9).
+- The regular expression [a-Z] doesn't make any sense at all, and [A-z]
+  is synonymous with [A-Z[\\\]^_`a-z]. The correct one is usually
+  [A-Za-z] or [a-zA-Z].
+- Lowercase characters are formed by setting the third most significant
+  bit of the corresponding uppercase character to 1 like so:
+
+    0100 0001  A
+    0110 0001  a
+    ---^
+
+- Each character in the third column corresponds to a control character
+  in the first column, but with the second most significant bit set like
+  so:
+
+    0001 1011  esc
+    0101 1011  [
+    -^
+
+  This is the origin of the Unix notation ^X, where X is a character
+  from the third column (e.g. esc can be represented as ^[). It's also
+  the reason why you can get these control characters by pressing
+  corresponding key while holding control (e.g. pressing Ctrl+[ to get
+  esc).
+
+
+OTHER SINGLE-BYTE CHARACTER ENCODINGS
+
+As discussed above, modern computers use 8-bit bytes, but ASCII only
+really needs 7, so the most significant bit is always 0, and there
+remain 128 "empty" values. Well, as it turned out, American English is
+not the only language in the world, and some people need a way to
+represent characters such as ß, ç and Ω. So they created their own
+ASCII-compatible character encodings with 128 extra characters.
+
+Here are a few such encodings:
+
+- ISO 8859-1 (Latin1)
+- KOI8-R
+- Windows-1252 (CP-1252)
+- Windows-1251 (CP-1251)
+
+Although, these encodings did solve some problems, they also introduced
+a lot of new ones, such as:
+
+- People were still limited to only a few languages per file. You
+  couldn't write an English text with a few German *and* Russian words.
+- For identical character sets there existed several different
+  encodings. That reduced interoperability between operating systems.
+- If you were to get a file from "somewhere", you would not necessarily
+  be able to read it. At the very least you would have to guess the
+  file's encoding.
+
+Fortunately, nowadays, you are very unlikely to get some random file in
+anything other than UTF-8. Unfortunately, if you have to work with
+postscript or matrix printers, you may still have to deal with the
+legacy.
+
+
+DOUBLE-BYTE CHARACTER ENCODINGS
+
+Turns out, there are some scripts where 128 characters is just not
+enough. For this reason, before the unicode, the CJK (Chinese, Japanese,
+Korean) languages, used to represent characters with two bytes.
+
+Unfortunately, I am not an expert on CJK languages, or their
+representation. If you want to know more, I suggest doing your own
+research.
+
+
+UNICODE AND UTF-8
+
+Thankfully, Unicode was invented so that every script that one might
+reasonably want on a computer could be represented using the same
+encoding.
+
+Here's the Unicode code point for the Hebrew letter Aleph (א): U+05D0.
+U+ means "Unicode", and 05D0 are two bytes 05 D0 in hexadecimal. ASCII
+characters are the same, except that the most significant byte is 00.
+U+0041 is A. Unicode code points can be longer than 2 bytes. The highest
+defined code point is U+10FFFF.
+
+Code points are distinct from graphemes. For instance, ñ could be
+represented as U+00F1, or as U+006E U+0303 (two code points). That's
+because U+006E is plain ASCII n, and U+0303 is a combining character
+called COMBINING TILDE. Combining characters are not supposed to
+represent an independent grapheme, but to modify the preceding
+grapheme.
+
+The Unicode itself is not an encoding, but a standard that can be
+represented with several encodings. If you use Unix, the only one you
+should really care about is UTF-8. UTF-8 is a variable-length encoding,
+that represents code points with one, two, three, or four bytes. The
+encoding is as follows:
+
+  U+0000 - U+007F:
+    0XXXXXXX (one byte, ASCII compatible)
+  U+0080 - U+07FF:
+    110XXXXX 10XXXXXX (two bytes)
+  U+0800 - U+D7FF and U+E000 - U+FFFF:
+    1110XXXX 10XXXXXX 10XXXXXX (three bytes)
+  U+10000 - U+10FFFF:
+    11110XXX 10XXXXXX 10XXXXXX 10XXXXXX (four bytes)
+
+How to operate on that will depend on the programming language and
+environment. For C you may wish to see my [locales in C] article.
+Alternatively you may want to use the [ICU] library.
+
+
+CONCLUSION
+
+I usually avoid conclusions, and instead skip to further reading, but
+the information in this article is a bit less straightforward than I
+usually like. So, the key points are:
+
+- The entire world agrees on Unicode and UTF-8.
+- It covers most writing systems on Earth.
+- UTF-8 is ASCII-compatible. This means that if the most interesting
+  thing your program does with characters is checking for '\0' and '\n',
+  you probably don't need to modify it.
+- For anything as advanced as "how many (human-readable) character does
+  this string has", you'll have to use special functions, possibly from
+  a third-party library.
+
+
+SEE ALSO
+
+- Man pages ascii(7), utf8(7), iconv(1), locale(1), setlocale(3)
+- The Absolute Minimum Every Software Developer Absolutely, Positively
+  Must Know About Unicode and Character Sets (No Excuses!) by
+  Joel Spolsky:
+  https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/
+
+
+REFERENCES
+
+[locales in C] https://manpager.org/usr/aa/art/014.locales_in_c.txt
+               gopher://manpager.org/0/usr/aa/art/014.locales_in_c.txt
+	       gemini://manpager.org/usr/aa/art/014.locales_in_c.txt
+[ICU] https://icu.unicode.org/

@@ -1,0 +1,141 @@
+Title: Locales in C
+Author: Alexander Arkhipov <aa@manpager.org>
+Created: 2024-03-08
+Modified: 2024-03-08
+
+Locales are pretty important. To write a C program that does anything
+with strings as, or more complicated than counts the number of
+(human-visible) characters in a string -- as opposed to the number of
+bytes -- you need to understand how to use a large set of functions
+defined in locale.h and wchar.h. This article should give you enough
+info to get started.
+
+Before you start, however, you should already have basic understanding
+of character encodings (read my article on [encodings] if you don't),
+and how does changing the LC_* and LANG environment variables can affect
+the behaviour of some programs like ls(1).
+
+
+A SIMPLE PROGRAM
+
+The good news is that once you figure out how multibyte encodings work,
+and what a locale is, making sense of some simple programs becomes easy.
+Once you do that, you'll be able to make sense of documentation. And
+then you'll be able to write real-world programs.
+
+Let's consider a simplified version of Unix fold(1). This version will
+take one integer argument (>= 2), and split lines at that width. Here's
+the program:
+
+/* compile with cc myfold.c, test with echo γλώσσα | ./a.out 2 */
+
+#include <locale.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <wchar.h>
+
+#define DEFMAXWIDTH 80
+
+int
+main(int argc, char *argv[])
+{
+	int maxwidth = DEFMAXWIDTH;
+	char *mbs = NULL; /* multibyte string */
+	wchar_t *wcs = NULL; /* wchar string */
+	size_t mbs_sz = 0, wcs_sz = 0; /* string sizes */
+
+	/* set LC_CTYPE to default value, determined by environment variables */
+	setlocale(LC_CTYPE, "");
+
+	if (argc > 1)
+		if (sscanf(argv[1], "%d", &maxwidth) < 1) {
+			fprintf(stderr, "bad argument: %s\n", argv[1]);
+			return 1;
+		}
+
+	if (maxwidth < 2)
+		fprintf(stderr, "can't fold in less than 2 columns\n");
+
+	while (getline(&mbs, &mbs_sz, stdin) != -1) {
+		/*
+		 * On the first call of mbstowcs we supply NULL instead
+		 * of wcs just to find out how much memory we'll need.
+		 */
+		size_t newsz = mbstowcs(NULL, mbs, 0) + 1; /* + L'\0' */
+		if (newsz == (size_t)-1) {
+			fprintf(stderr, "invalid character\n");
+			goto out;
+		}
+
+		if (newsz > wcs_sz) {
+			void *p;
+			if (!(p = reallocarray(wcs, newsz, sizeof *wcs))) {
+				fprintf(stderr, "allocation error\n");
+				goto out;
+			}
+			wcs = p;
+			wcs_sz = newsz;
+		}
+
+		/*
+		 * On the second call we actually convert the multibyte
+		 * string into a wchar string.
+		 */
+		/* L'X' and L"foo" are literal wchar values and strings */
+		mbstowcs(wcs, mbs, wcs_sz);
+		wcs[wcs_sz-1] = L'\0';
+
+		int width = 0;
+		for (wchar_t *p = wcs; *p; p++) {
+			/*
+			 * wcwidth determines the width of a wchar
+			 * value. It may return 0, 1 or 2.
+			 */
+			int wcw = wcwidth(*p);
+			width += wcw;
+			if (width > maxwidth) {
+				putchar('\n');
+				width = wcw;
+			}
+			putwchar(*p);
+		}
+	}
+
+out:
+	free(mbs);
+	free(wcs);
+
+	return 0;
+}
+
+In "real world", I'd write the program a little differently, but that
+would rob me of the ability to demonstrate some things. Otherwise, the
+program should be should not be too hard to understand.
+
+As you can see, most of the useful functions are in wchar.h.h. wchar.h
+contains mostly of two types of functions:
+
+- Functions for converting between wchar strings/values and multibyte
+  char strings.
+- wchar equivalents of char functions (iswaplha(), putwchar(), etc.).
+
+locale.h is also very useful, but mostly just for the setlocale()
+function. If you don't call that function you'll be stuck with the C
+locale, which is essentially just ASCII.
+
+Also, please note how to specify literal wchar/wchar* values: same as
+literal char/char*, but with an L before the opening quote.
+
+
+REFERENCES
+
+[encodings] https://manpager.org/usr/aa/art/013.from_ascii_to_unicode.txt
+            gopher://manpager.org/0/usr/aa/art/013.from_ascii_to_unicode.txt
+            gemini://manpager.org/usr/aa/art/013.from_ascii_to_unicode.txt
+
+
+SEE ALSO
+
+- Man pages: locale(1), setlocale(3), locale.h(3p), wchar.h(3p)
+- Unicode examples: https://www.cl.cam.ac.uk/~mgk25/ucs/examples/
