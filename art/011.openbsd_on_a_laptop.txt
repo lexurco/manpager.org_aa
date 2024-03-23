@@ -1,3 +1,8 @@
+Title: OpenBSD on a laptop
+Author: Alexander Arkhipov <aa@manpager.org>
+Created: 2024-01-16
+Modified: 2024-03-23
+
 Until now (Jan 2024) my main machine has been a desktop computer the
 size of a small coffee table. At last, I got rid of the thing, replacing
 it instead with a thinkpad t440p. I mostly settled on this particular

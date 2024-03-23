@@ -1,3 +1,8 @@
+Title: battlestar
+Author: Alexander Arkhipov <aa@manpager.org>
+Created: Before 2023-06-24
+Modified: 2024-03-23
+
 battlestar(6) is an game written by "His Lordship, Admiral David W.
 Horatio Riggle." It is an adventure game not unlike adventure(6)
 (yes, that's a pun). His Lordship claims it to be less of a puzzle

@@ -1,3 +1,8 @@
+Title: Using rrrsync
+Author: Alexander Arkhipov <aa@manpager.org>
+Created: 2023-11-06
+Modified: 2024-03-23
+
 Recently (perhaps 2-3 months before writing this) I automated my
 backups, replacing the previous manual arrangement. Some of the files
 I need to backup are on a remote server, so there's been a small

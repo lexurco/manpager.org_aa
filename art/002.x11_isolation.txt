@@ -1,3 +1,8 @@
+Title: X11 isolation
+Author: Alexander Arkhipov <aa@manpager.org>
+Created: Before 2023-06-24
+Modified: 2024-03-23
+
 Nowadays it is often necessary to use either firefox, or chromium for
 tasks that you'd think to be basic enough not to require anything
 special. These programs are so huge that they tower over the Linux

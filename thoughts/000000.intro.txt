@@ -1,4 +1,7 @@
-2023-12-30
+Title: Introduction
+Author: Alexander Arkhipov <aa@manpager.org>
+Created: 2023-12-30
+Modified: 2023-12-30
 
 Originally, I created this site with a "blogs are kind of stupid"
 mindset. So instead I decided to publish "articles" in the art

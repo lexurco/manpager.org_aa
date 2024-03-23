@@ -1,3 +1,8 @@
+Title: Mail server
+Author: Alexander Arkhipov <aa@manpager.org>
+Created: Before 2023-06-24
+Modified: 2024-03-23
+
 Over what must have been more than a year I've read a lot of RFCs,
 had a lot of experience and put a lot of thought into mailing. This
 is the third version of this article. Most articles on setting up a

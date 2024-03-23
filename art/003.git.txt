@@ -1,4 +1,7 @@
-Using git
+Title: Using git
+Author: Alexander Arkhipov <aa@manpager.org>
+Created: Before 2023-06-24
+Modified: 2024-03-23
 
 Most tutorials are pretty bad because they can only attempt to give
 you some surface-level overview, and scarcely any give you leads on
