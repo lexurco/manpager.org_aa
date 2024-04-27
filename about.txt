@@ -5,21 +5,21 @@ the web/gopher/gemini.
 
 TIMELINE
 
-My memories of what has happend before 2014 are a bit foggy, so that may
+My memories of what has happened before 2014 are a bit foggy, so that may
 be not entirely accurate.
 
 2000: get born in Moscow
 2005: finally manage to pronounce the Russian rhotic sound! still hate
-      it, though
+      it after, though
 2007: first year at school, first enemies
 2008: the teacher tells us to be quiet; other children violate that
       order immediately; I don't join; I am punished along with the rest
-      anyway; 
+      anyway; I begin internalising a disdain for authority
 2011: switch Minecraft to English; most other programs on my computer
       are soon to follow
 2013: learn a bit of HTML; love it, but don't know what to do with it
 2014: Putin annexes Crimea; the ruble plummets, and everyone starts
-      hating Ukrainians; I begin googling "how to emmigrate"
+      hating Ukrainians; I begin googling "how to emigrate"
 2015: move to a different school, get familiar with Pascal
 2016: switch to Python
 2018: graduate from school only to immediately get into a cybersecurity
@@ -30,11 +30,11 @@ be not entirely accurate.
 2022: Putin invades Ukraine, and I get my bachelor's diploma; instead of
       going for a master's, I go for a job, because the IT and CS
       workers are now exempt from conscription; I soon realise my
-      hatered for the job
-2023: notice that I have "just about enough" money; secretely prepare
+      hatred for the job
+2023: notice that I have "just about enough" money; secretly prepare
       the documents, and on the last work day of the year, I tell the
       boss I'm leaving
-2024: I am renting an appartment in Kutaisi, and working a remote job;
+2024: I am renting an apartment in Kutaisi, and working a remote job;
       so far so good...
 
 
