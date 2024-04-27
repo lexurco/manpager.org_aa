@@ -14,6 +14,7 @@ Content under CC-BY-4.0.
 => project.txt	project
 => plan.txt	plan
 => plan/	plan archive
+=> about.txt	about
 
 => hacks/	hacks
 => art/		articles

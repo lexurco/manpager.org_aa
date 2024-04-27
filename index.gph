@@ -12,6 +12,7 @@ Content under CC-BY-4.0.
 [0|project|project.txt|server|port]
 [0|plan|plan.txt|server|port]
 [0|plan archive|plan/|server|port]
+[0|about|about.txt|server|port]
 
 [1|hacks|hacks/|server|port]
 [1|articles|art/|server|port]

@@ -1,0 +1,52 @@
+This is some info about myself, that I didn't feel like putting into my
+~/.project. A mini-autobiography of sorts. If you want things like my
+contact info, please finger(1) aa at this server, or see project.txt on
+the web/gopher/gemini.
+
+TIMELINE
+
+My memories of what has happend before 2014 are a bit foggy, so that may
+be not entirely accurate.
+
+2000: get born in Moscow
+2005: finally manage to pronounce the Russian rhotic sound! still hate
+      it, though
+2007: first year at school, first enemies
+2008: the teacher tells us to be quiet; other children violate that
+      order immediately; I don't join; I am punished along with the rest
+      anyway; 
+2011: switch Minecraft to English; most other programs on my computer
+      are soon to follow
+2013: learn a bit of HTML; love it, but don't know what to do with it
+2014: Putin annexes Crimea; the ruble plummets, and everyone starts
+      hating Ukrainians; I begin googling "how to emmigrate"
+2015: move to a different school, get familiar with Pascal
+2016: switch to Python
+2018: graduate from school only to immediately get into a cybersecurity
+      bachelor program to avoid army conscription
+2020: install Linux for the first time (later I mostly switch to
+      OpenBSD), begin reading lots of nonfiction, and actually doing
+      stuff besides playing video games
+2022: Putin invades Ukraine, and I get my bachelor's diploma; instead of
+      going for a master's, I go for a job, because the IT and CS
+      workers are now exempt from conscription; I soon realise my
+      hatered for the job
+2023: notice that I have "just about enough" money; secretely prepare
+      the documents, and on the last work day of the year, I tell the
+      boss I'm leaving
+2024: I am renting an appartment in Kutaisi, and working a remote job;
+      so far so good...
+
+
+A LITTLE ABOUT ME
+
+My name is Alexander. I am a free software developer, a cosmopolite, an
+explorer and a life-long learner.
+
+
+FUTURE
+
+At the moment I write this, I've been outside of my birth country for
+about 3 months, and I love it! The beginning was a bit of a struggle,
+but I am finally set up to work on many of long-delayed projects. I'll
+be sure to post the updates in my ~/.plan!
