@@ -17,3 +17,11 @@ up writing two:
 2. https://manpager.org/usr/aa/art/014.locales_in_c.txt
    gopher://manpager.org/0/usr/aa/art/014.locales_in_c.txt
    gemini://manpager.org/usr/aa/art/014.locales_in_c.txt
+
+
+Entry: 2024-04-27   
+
+- wrote an about.txt (root directory of the web/gopher/gemini site)
+- archived previous year's ~/.plan entries (still can be viewed via
+  the web/gopher/gemini)
+- added thoughts/240427.my_new_habits.txt
