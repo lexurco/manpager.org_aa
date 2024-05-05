@@ -1,6 +1,8 @@
 Now:
 2024-05-05
 
+Living in the beautiful city of Kutaisi since January 2024!
+
 5 months into the year, I finally managed to get out of my head, get a
 remote job and start doing something! Actually, still thinking what's
 the best way of dealing with the newfound income.
@@ -19,6 +21,7 @@ local book shop. So far seems pretty good. I also orderd a bunch of
 books from America.
 
 
+News:
 Entry: 2024-02-26
 
 A couple of new additions:
@@ -46,6 +49,7 @@ Entry: 2024-04-27
 - archived previous year's ~/.plan entries (still can be viewed via
   the web/gopher/gemini)
 - added thoughts/240427.my_new_habits.txt
+
 
 Entry: 2024-05-05
 
