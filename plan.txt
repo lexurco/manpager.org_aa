@@ -1,3 +1,24 @@
+Now:
+2024-05-05
+
+5 months into the year, I finally managed to get out of my head, get a
+remote job and start doing something! Actually, still thinking what's
+the best way of dealing with the newfound income.
+
+I bought a textbook on the Georgian language, and a dictionary. So far,
+learning the language proves much more challenging than any other I've
+studied before, but much more fun as well! At the very moment, I am
+struggling with the alphabet.
+
+I began inspecting the tmux source code. I have a few ideas on how the
+program might be improved. Might send some patches on the ML at some
+point.
+
+I am reading 12 Rules for Life by Jordan B. Peterson. Found it at a
+local book shop. So far seems pretty good. I also orderd a bunch of
+books from America.
+
+
 Entry: 2024-02-26
 
 A couple of new additions:
@@ -25,3 +46,10 @@ Entry: 2024-04-27
 - archived previous year's ~/.plan entries (still can be viewed via
   the web/gopher/gemini)
 - added thoughts/240427.my_new_habits.txt
+
+Entry: 2024-05-05
+
+I wrote a new article in thoughts/240505.youth_sucks.txt, called
+"Youth sucks (but adulthood and beyond don't have to)". It's pretty
+short and to the point, as usual, but it is something I wanted to write
+about for a long time. Enjoy!
