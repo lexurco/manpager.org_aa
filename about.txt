@@ -3,6 +3,7 @@ This is some info about myself, that I didn't feel like putting into my
 contact info, please finger(1) aa at this server, or see project.txt on
 the web/gopher/gemini.
 
+
 TIMELINE
 
 My memories of what has happened before 2014 are a bit foggy, so that may
