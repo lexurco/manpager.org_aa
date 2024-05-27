@@ -7,18 +7,19 @@ Living in the beautiful city of Kutaisi since January 2024!
 remote job and start doing something! Actually, still thinking what's
 the best way of dealing with the newfound income.
 
-I bought a textbook on the Georgian language, and a dictionary. So far,
-learning the language proves much more challenging than any other I've
-studied before, but much more fun as well! At the very moment, I am
-struggling with the alphabet.
+My attempt to study Georgian didn't go much beyond learning the
+alphabet. I am now trying a different approach with Serbian. I think
+I'll stay in Novi Sad for the next year.
+
+Found out about all the cool expat gatherings. First real friends in
+years!
 
 I began inspecting the tmux source code. I have a few ideas on how the
 program might be improved. Might send some patches on the ML at some
 point.
 
-I am reading 12 Rules for Life by Jordan B. Peterson. Found it at a
-local book shop. So far seems pretty good. I also orderd a bunch of
-books from America.
+Reading The 4-Hour Workweek by Tim Ferriss. Really interesting stuff,
+especially fear-setting.
 
 
 News:
