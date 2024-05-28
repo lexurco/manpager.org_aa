@@ -1,22 +1,27 @@
 Now:
 2024-05-05
 
-Living in the beautiful city of Kutaisi since January 2024!
+Living in the beautiful city of Kutaisi since January 2024 (right by the
+opera house too)!
 
-5 months into the year, I finally managed to get out of my head, get a
-remote job and start doing something! Actually, still thinking what's
-the best way of dealing with the newfound income.
+Got a remote job now. Hourly income multiplied 34 times! (Monthly by
+less impressive 2.) Probably not very sustainable long-term. Planning
+my next move.
 
 My attempt to study Georgian didn't go much beyond learning the
 alphabet. I am now trying a different approach with Serbian. I think
 I'll stay in Novi Sad for the next year.
 
-Found out about all the cool expat gatherings. First real friends in
-years!
+Found out about all the cool expat gatherings. Making lots of cool
+friends!
 
-I began inspecting the tmux source code. I have a few ideas on how the
-program might be improved. Might send some patches on the ML at some
-point.
+Trying to tackle free software codebases of various sizes. Especially,
+the programs in the OpenBSD source tree.
+
+Recording business (and other) ideas in my notebook. Will have to start
+testing some of that stuff soon.
+
+Trying to cold-email interesting people.
 
 Reading The 4-Hour Workweek by Tim Ferriss. Really interesting stuff,
 especially fear-setting.
