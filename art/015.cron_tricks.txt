@@ -1,7 +1,7 @@
 Title: Cron tricks
 Author: Alexander Arkhipov <aa@manpager.org>
 Created: 2024-06-06
-Modified: 2024-06-06
+Modified: 2024-06-07
 
 cron(8) is one of Unix' most infamous, most helpful, and most annoying
 daemons. There are lots of tricks, which can help make the experience so
@@ -145,7 +145,7 @@ who(1)-filtering bit in a script (e.g. ~/bin/getdisp):
 
 who | awk -v u=${1:-$USER} '
 	$1 == u && $NF ~ /^\(:[0-9]+\)$/ {
-		print substr($NF, 2, length($NF-2)
+		print substr($NF, 2, length($NF)-2)
 		exit
 	}
 '
