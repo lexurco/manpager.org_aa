@@ -63,16 +63,25 @@ be not entirely accurate.
 
 A LITTLE ABOUT ME
 
-My name is Alexander. I am a free software developer, a cosmopolite, an
-explorer and a life-long learner.
+My name is Alexander. I am a free software developer and a cosmopolite.
+I love learning, but hate bigotry and hypocrisy. I grew up in the
+gulag-land, but now I am free, and will not exchange that for anything
+in the world.
 
+I do most of my computing on an old ThinkPad, running OpenBSD. I try to
+avoid social media as much as possible, and I keep my Android phone in
+the cupboard most of the time. I don't read news, don't watch TV, and
+at most play a film, or a video game once in a moth, or two.
 
-FUTURE
+I used to read lots of fiction when I was younger, but now I read
+non-fiction almost exclusively. I still like getting through a couple of
+chapters of a novel before I go to sleep.
 
-At the moment I write this, I've been outside of my birth country for
-months, and I love it! The beginning was a bit of a struggle, but I am
-finally set up to work on many of long-delayed projects. I'll be sure to
-post the updates in my ~/.plan!
+I used to be very "busy" all the time, mostly due to spending an
+enormous amount of time at school/university/office. I am not anymore.
+I am in control of my time. Now that I am a free man, and don't have to
+do what someone else tells me to, I try to find an effective approach to
+most things, and end up doing them faster and better.
 
 
 LESSONS LEARNED
