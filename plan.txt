@@ -63,3 +63,12 @@ I wrote a new article in thoughts/240505.youth_sucks.txt, called
 "Youth sucks (but adulthood and beyond don't have to)". It's pretty
 short and to the point, as usual, but it is something I wanted to write
 about for a long time. Enjoy!
+
+
+Entry: 2024-06-07
+
+Hello, friends. Something very tragic has happened recently. I don't
+know if I'll manage to keep the site updated, but I will try, since it
+seems to help a bit.
+
+I added a new article in art/015.cron_tricks.txt
