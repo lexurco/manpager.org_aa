@@ -1,0 +1,164 @@
+Title: Cron tricks
+Author: Alexander Arkhipov <aa@manpager.org>
+Created: 2024-06-06
+Modified: 2024-06-06
+
+cron(8) is one of Unix' most infamous, most helpful, and most annoying
+daemons. There are lots of tricks, which can help make the experience so
+less painful. Let's review some of these!
+
+
+GENERAL
+
+	Getting your environment right
+
+A nice trick to set your environment, as if you were in a login shell,
+is to create the following file (say, ~/.shrc):
+
+eval `/bin/ksh -l -c 'export -p'`
+
+And then load it like so:
+
+. ~/.shrc
+
+Of course, if you are using ksh, you may just do something like
+
+. ~/.profile; . ~/.kshrc
+
+But the first method is, I think, more general, as you only need to
+modify one word in one file if you change your shell, etc. In fact, cron
+sets HOME, SHELL and USER, so you should even be able to do this:
+
+eval `$SHELL -l -c 'export -p'`
+
+But I wouldn't go as far.
+
+To then to use it with cron, create a file like so (say, ~/bin/cjob):
+
+#!/bin/sh
+
+. $HOME/.shrc
+
+case $1 in
+ajob)	ajob_command ;;
+bjob)	bjob_command ;;
+esac
+
+And make it executable with `chmod 755 ~/bin/cjob`.
+
+The cronjobs themselves would look something like so:
+
+*/30 * * * * $HOME/bin/cjob ajob
+0 8 * * * $HOME/bin/cjob bjob >/dev/null
+
+
+	Using command output with %-syntax
+
+It is well-known that % has special meaning in crontab: The first one
+specifies that everything after should go on the commands stdin, and the
+ones after that are replaced with a newline. This second property makes
+them very useful, since crontab doesn't allow newlines otherwise.
+However, this does not provide for cases when we want to use command
+output. This doesn't work, for example:
+
+0 12 * * * mail -s hey bob%hello bob, it's $(date +\%H:\%M)
+
+You can instead employ a trick with cat:
+
+*/10 */2 * * * { cat; date +\%H:\%M; } | mail -s hey bob%hello, bob, it's 
+
+(There's a single space at the end.)
+
+Unfortunately that only permits command substitution at the beginning,
+and at the end. For anything more complicated, you might want to use
+echo(1) and printf(1).
+
+
+	More general approach to newlines
+
+You can use printf(1) to get newlines in your commands, though you'll
+have to escape the backslash twice:
+
+*/10 */2 * * * printf '%s\\n%s' "hey bob" "it's $(date +%H:%M)" | mail -s hey bob
+
+Or if you want to have a special character standing for newline, (e.g.
+@) you can do that with tr, or sed:
+
+*/10 */2 * * * echo "hey bob@it's $(date +%H:%M)@Made With tr(1)" | tr @ \\\\n | mail -s hey bob
+*/10 */2 * * * echo "hey bob@it's $(date +%H:%M)@Made With sed(1)" | sed s/@/\\\\n/g | mail -s hey bob
+
+(Note the doubly-escaped backslashes in all of the above!)
+
+
+	Doing things with tmux
+
+Most tmux commands are good enough at assuming the first session they
+can get, but let's also check for any sessions existing first:
+
+0 12 * * * tmux ls >/dev/null 2>&1 && tmux popup echo "it's 12 o'clock"
+
+
+OPENBSD SPECIFIC
+
+There are many implementations of cron. Most have extensions. Here are
+some OpenBSD specific:
+
+- Random intervals with ~. E.g., beep at random minute every hour:
+
+~ * * * * printf \\\\b
+
+- Command output is mailed to the crontab owner! Really awesome for
+  debugging, and noticing problems early. Copious mail output is not a
+  problem either because of...
+- Flags! Commands can be run with flags -nqs, like so:
+
+# no e-mail will be sent because of the -n flag
+* * * * * -n echo hello
+# in spite of -n, mail will be sent due to non-zero exit status
+* * * * * -n echo bad; false
+
+- "Steps" (slash-syntax, like */2), are an OpenBSD extension, though as
+  far as I know it's found in most modern implementations.
+
+
+	X11 programs
+
+You might know that this works:
+
+0 12 * * * DISPLAY=:0 /usr/X11R6/bin/xmessage "it's 12 o'clock!"
+
+(Though even that may require messing with XAUTHORITY, to which I can't
+give you any good advice.)
+
+Finding a more general approach to setting DISPLAY is ironically very
+system-specific. On OpenBSD you can use who(1):
+
+0 12 * * * DISPLAY=`who | awk -vu=$USER '$1 == u && $NF ~ /^[(]:[0-9]+[)]$/ {print substr($NF, 2, length($NF)-2); exit}'` /usr/X11R6/bin/xmessage "it's 12 o'clock"
+
+(I put parantheses into brackets here to avoid doubly-escaping
+the backslashes.)
+
+If you have many regularly-running X11 cronjobs, you can save the
+who(1)-filtering bit in a script (e.g. ~/bin/getdisp):
+
+#!/bin/sh
+
+who | awk -v u=${1:-$USER} '
+	$1 == u && $NF ~ /^\(:[0-9]+\)$/ {
+		print substr($NF, 2, length($NF-2)
+		exit
+	}
+'
+
+Then the cronjob becomes like so:
+
+0 12 * * * DISPLAY=`$HOME/bin/getdisp` /usr/X11R6/bin/xmessage "it's 12 o'clock"
+
+Of course, the script above can be expanded in many ways. Use your
+imagination.
+
+
+MORE?
+
+Do you have more cron tricks? Please write me an e-mail, and I'll add
+them to the article, noting your contribution.
