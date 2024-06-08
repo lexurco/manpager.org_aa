@@ -98,6 +98,32 @@ can get, but let's also check for any sessions existing first:
 0 12 * * * tmux ls >/dev/null 2>&1 && tmux popup echo "it's 12 o'clock"
 
 
+	X11 authorised display
+
+You can use the following script (e.g. ~/bin/xauthorised) to find
+authorised X displays via Unix sockets. The vast majority of modern
+X windows setups will use Unix sockets.
+
+#!/bin/sh
+
+ret=1
+
+for f in /tmp/.X11-unix/*; do
+	test -S $f || continue
+	d=:`basename $f | tr -d X`
+	DISPLAY=$d xprop -root >/dev/null 2>&1 && {
+		ret=0
+		echo $d
+	}
+done
+
+exit $ret
+
+You can then use it from cron like so:
+
+0 12 * * * DISPLAY=`$HOME/bin/xauthorised | head -1` /usr/X11R6/bin/xmessage "it's 12 o'clock"
+
+
 OPENBSD SPECIFIC
 
 There are many implementations of cron. Most have extensions. Here are
@@ -121,17 +147,12 @@ some OpenBSD specific:
   far as I know it's found in most modern implementations.
 
 
-	X11 programs
+	X11 logged on display
 
-You might know that this works:
-
-0 12 * * * DISPLAY=:0 /usr/X11R6/bin/xmessage "it's 12 o'clock!"
-
-(Though even that may require messing with XAUTHORITY, to which I can't
-give you any good advice.)
-
-Finding a more general approach to setting DISPLAY is ironically very
-system-specific. On OpenBSD you can use who(1):
+In "X11 authorised display" I gave an example of finding any X display,
+where cron can run an X11 program. OpenBSD allows you to be more
+specific, and get the display each user is logged on to via who(1).
+Here's how to use it:
 
 0 12 * * * DISPLAY=`who | awk -vu=$USER '$1 == u && $NF ~ /^[(]:[0-9]+[)]$/ {print substr($NF, 2, length($NF)-2); exit}'` /usr/X11R6/bin/xmessage "it's 12 o'clock"
 
