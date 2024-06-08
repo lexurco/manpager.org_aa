@@ -1,7 +1,7 @@
 Title: Cron tricks
 Author: Alexander Arkhipov <aa@manpager.org>
 Created: 2024-06-06
-Modified: 2024-06-07
+Modified: 2024-06-08
 
 cron(8) is one of Unix' most infamous, most helpful, and most annoying
 daemons. There are lots of tricks, which can help make the experience so
