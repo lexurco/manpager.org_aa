@@ -44,7 +44,7 @@ ajob)	ajob_command ;;
 bjob)	bjob_command ;;
 esac
 
-And make it executable with `chmod 755 ~/bin/cjob`.
+And make it executable with `chmod 755 ~/bin/cjob'.
 
 The cronjobs themselves would look something like so:
 
@@ -79,13 +79,13 @@ echo(1) and printf(1).
 You can use printf(1) to get newlines in your commands, though you'll
 have to escape the backslash twice:
 
-*/10 */2 * * * printf '%s\\n%s' "hey bob" "it's $(date +%H:%M)" | mail -s hey bob
+*/10 */2 * * * printf '\%s\\n\%s' "hey bob" "it's $(date +\%H:\%M)" | mail -s hey bob
 
 Or if you want to have a special character standing for newline, (e.g.
 @) you can do that with tr, or sed:
 
-*/10 */2 * * * echo "hey bob@it's $(date +%H:%M)@Made With tr(1)" | tr @ \\\\n | mail -s hey bob
-*/10 */2 * * * echo "hey bob@it's $(date +%H:%M)@Made With sed(1)" | sed s/@/\\\\n/g | mail -s hey bob
+*/10 */2 * * * echo "hey bob@it's $(date +\%H:\%M)@Made With tr(1)" | tr @ \\\\n | mail -s hey bob
+*/10 */2 * * * echo "hey bob@it's $(date +\%H:\%M)@Made With sed(1)" | sed s/@/\\\\n/g | mail -s hey bob
 
 (Note the doubly-escaped backslashes in all of the above!)
 
