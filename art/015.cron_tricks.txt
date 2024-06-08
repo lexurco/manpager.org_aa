@@ -76,18 +76,15 @@ echo(1) and printf(1).
 
 	More general approach to newlines
 
-You can use printf(1) to get newlines in your commands, though you'll
-have to escape the backslash twice:
+You can use printf(1) to get newlines in your commands:
 
-*/10 */2 * * * printf '\%s\\n\%s' "hey bob" "it's $(date +\%H:\%M)" | mail -s hey bob
+*/10 */2 * * * printf '\%s\n\%s' "hey bob" "it's $(date +\%H:\%M)" | mail -s hey bob
 
 Or if you want to have a special character standing for newline, (e.g.
 @) you can do that with tr, or sed:
 
-*/10 */2 * * * echo "hey bob@it's $(date +\%H:\%M)@Made With tr(1)" | tr @ \\\\n | mail -s hey bob
-*/10 */2 * * * echo "hey bob@it's $(date +\%H:\%M)@Made With sed(1)" | sed s/@/\\\\n/g | mail -s hey bob
-
-(Note the doubly-escaped backslashes in all of the above!)
+*/10 */2 * * * echo "hey bob@it's $(date +\%H:\%M)@Made With tr(1)" | tr @ \\n | mail -s hey bob
+*/10 */2 * * * echo "hey bob@it's $(date +\%H:\%M)@Made With sed(1)" | sed s/@/\\n/g | mail -s hey bob
 
 
 	Doing things with tmux
@@ -131,7 +128,7 @@ some OpenBSD specific:
 
 - Random intervals with ~. E.g., beep at random minute every hour:
 
-~ * * * * printf \\\\b
+~ * * * * printf \\b
 
 - Command output is mailed to the crontab owner! Really awesome for
   debugging, and noticing problems early. Copious mail output is not a
@@ -154,10 +151,7 @@ where cron can run an X11 program. OpenBSD allows you to be more
 specific, and get the display each user is logged on to via who(1).
 Here's how to use it:
 
-0 12 * * * DISPLAY=`who | awk -vu=$USER '$1 == u && $NF ~ /^[(]:[0-9]+[)]$/ {print substr($NF, 2, length($NF)-2); exit}'` /usr/X11R6/bin/xmessage "it's 12 o'clock"
-
-(I put parantheses into brackets here to avoid doubly-escaping
-the backslashes.)
+0 12 * * * DISPLAY=`who | awk -vu=$USER '$1 == u && $NF ~ /^\(:[0-9]+\)$/ {print substr($NF, 2, length($NF)-2); exit}'` /usr/X11R6/bin/xmessage "it's 12 o'clock"
 
 If you have many regularly-running X11 cronjobs, you can save the
 who(1)-filtering bit in a script (e.g. ~/bin/getdisp):
