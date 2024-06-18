@@ -23,9 +23,6 @@ testing some of that stuff soon.
 
 Trying to cold-email interesting people.
 
-Reading The 4-Hour Workweek by Tim Ferriss. Really interesting stuff,
-especially fear-setting.
-
 
 News:
 Entry: 2024-02-26
@@ -72,3 +69,8 @@ know if I'll manage to keep the site updated, but I will try, since it
 seems to help a bit.
 
 I added a new article in art/015.cron_tricks.txt
+
+
+Entry: 2024-06-18
+
+Made a mastodon (@aa@bsd.cafe)
