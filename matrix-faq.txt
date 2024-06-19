@@ -1,0 +1,7 @@
+If you want to chat with me, but can't use email, follow these steps:
+
+1. Go to https://matrix.org/ecosystem/clients/ and pick one (if you are
+   not sure, you can use Element).
+2. https://servers.joinmatrix.org/ lists some public servers. There's
+   the "big" server matrix.org. Pick whichever one you like.
+3. Write a "hello" to @aa:4d2.org (that's me).
