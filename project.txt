@@ -7,10 +7,9 @@ Contacts:
 Friends call me Lexu. The most reliable way to contact me is email.
 
 email:			aa@manpager.org
-matrix:			@aa:4d2.org
+tilde.institute:	https://aa.tilde.institute/
 github:			https://github.com/aamanpager/
 mastodon:		@aa@bsd.cafe
-tilde.institute:	https://aa.tilde.institute/
 
 I am on some other websites, but good luck actually contacting me there.
 
