@@ -1,0 +1,44 @@
+Title: Notes on .forward
+Author: Alexander Arkhipov <aa@manpager.org>
+Created: 2024-06-25
+Modified: 2024-06-25
+
+You can put a .forward file in your home directory to instruct the
+site's smtpd server what to do with your email. It contains entries in
+two formats:
+
+user@site.tld
+"|/path/to/mda"
+
+The first simply tells the smtpd to deliver your mail to user@site.tld
+instead, which is already useful if you usually read your mail on
+another machine, or from a different account.
+
+The second pipes the message to a mail delivery program. An example of
+such program is fdm, and you may already be familiar with its more
+common uses. Here's something more interesting: suppose you want to
+share your ZucBook account with Bob. Rather than manually sending the
+one time code to Bob whenever he changes his IP address, and ZucBook
+decides that his login is a bit suspicios, you'd probably prefer to
+forward these to Bob automatically, but also keep a copy for yourself.
+Here's one way to do this with fdm, mblaze and .forward.
+
+First, write the following .fdm.conf:
+
+account "forward" disabled stdin
+
+match account "forward" {
+	match "^from:.*<noreply@zucbook\.com>" in headers and
+	    "^subject:.* verification code is " in headers actions {
+		# save a copy for ourselves
+		maildir "%h/mail"
+		# and forward to bob with mblaze
+		exec "mfwd -to bob@mail.tld -send -- %[mail_file]"
+	}
+	# otherwise just save for ourselves
+	match all action maildir "%h/mail"
+}
+
+And then the following .forward:
+
+"|/usr/local/bin/fdm -m -a forward fetch"
