@@ -74,3 +74,9 @@ I added a new article in art/015.cron_tricks.txt
 Entry: 2024-06-18
 
 Made a mastodon (@aa@bsd.cafe)
+
+
+Entry: 2024-06-25
+
+New article (a bit of a short one this time):
+art/016.notes_on_dot-forward.txt
