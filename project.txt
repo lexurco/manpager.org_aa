@@ -8,7 +8,7 @@ Friends call me Lexu. The most reliable way to contact me is email.
 
 email:			aa@manpager.org
 tilde.institute:	https://aa.tilde.institute/
-github:			https://github.com/aamanpager/
+github:			https://github.com/lexurco/
 mastodon:		@aa@bsd.cafe
 
 I am on some other websites, but good luck actually contacting me there.
