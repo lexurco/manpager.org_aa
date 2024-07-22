@@ -1,0 +1,243 @@
+Title: How to install Alpine Linux on OpenBSD VMM
+Author: Alexander Arkhipov <aa@manpager.org>
+Created: 2024-07-22
+Modified: 2024-07-22
+
+ON OPENBSD
+
+At the time of writing, Alpine Linux 3.20.1 is the most recent. You can
+get a URL relevant to you from https://alpinelinux.org/downloads/, or by
+exploring a mirror in a web browser.
+
+$ ftp https://dl-cdn.alpinelinux.org/alpine/v3.20/releases/x86_64/alpine-virt-3.20.1-x86_64.iso
+$ vmctl create -s 5G alpine.qcow2 # or .img
+# vmctl start -cL -d alpine.qcow2 -B cdrom -m 1G -r alpine-virt-3.20.1-x86_64.iso alpine
+
+
+ON ALPINE
+
+Below is a transcript of installation. My comments are offered in
+parentheses, all caps (LIKE SO).
+
+Welcome to Alpine Linux 3.20
+Kernel 6.6.34-1-virt on an x86_64 (/dev/ttyS0)
+
+localhost login: root
+(NO PASSWORD)
+Welcome to Alpine!
+
+The Alpine Wiki contains a large amount of how-to guides and general
+information about administrating Alpine systems.
+See <https://wiki.alpinelinux.org/>.
+
+You can setup the system with the command: setup-alpine
+
+You may change this message by editing /etc/motd.
+
+localhost:~# setup-alpine
+
+
+ ALPINE LINUX INSTALL
+----------------------
+
+ Hostname
+----------
+Enter system hostname (fully qualified form, e.g. 'foo.example.org') [localhost] alpine.my.domain
+
+ Interface
+-----------
+Available interfaces are: eth0.
+Enter '?' for help on bridges, bonding and vlans.
+Which one do you want to initialize? (or '?' or 'done') [eth0]
+Ip address for eth0? (or 'dhcp', 'none', '?') [dhcp]
+Do you want to do any manual network configuration? (y/n) [n]
+udhcpc: started, v1.36.1
+udhcpc: broadcasting discover
+udhcpc: broadcasting select for 100.64.5.3, server 100.64.5.2
+udhcpc: lease of 100.64.5.3 obtained from 100.64.5.2, lease time 4294967295
+
+ Root Password
+---------------
+Changing password for root
+New password:
+Bad password: too short
+Retype password:
+passwd: password for root changed by root
+
+ Timezone
+----------
+Africa/            Egypt              Iran               Poland
+America/           Eire               Israel             Portugal
+Antarctica/        Etc/               Jamaica            ROC
+Arctic/            Europe/            Japan              ROK
+Asia/              Factory            Kwajalein          Singapore
+Atlantic/          GB                 Libya              Turkey
+Australia/         GB-Eire            MET                UCT
+Brazil/            GMT                MST                US/
+CET                GMT+0              MST7MDT            UTC
+CST6CDT            GMT-0              Mexico/            Universal
+Canada/            GMT0               NZ                 W-SU
+Chile/             Greenwich          NZ-CHAT            WET
+Cuba               HST                Navajo             Zulu
+EET                Hongkong           PRC                leap-seconds.list
+EST                Iceland            PST8PDT            posixrules
+EST5EDT            Indian/            Pacific/
+
+Which timezone are you in? [UTC]
+
+ * Seeding random number generator ...
+ * Saving 256 bits of creditable seed for next boot
+ [ ok ]
+ * Starting busybox crond ...
+ [ ok ]
+
+ Proxy
+-------
+HTTP/FTP proxy URL? (e.g. 'http://proxy:8080', or 'none') [none]
+
+ Network Time Protocol
+-----------------------
+Mon Jul 22 11:06:46 UTC 2024
+Which NTP client to run? ('busybox', 'openntpd', 'chrony' or 'none') [chrony]
+ * service chronyd added to runlevel default
+ * Caching service dependencies ...
+ [ ok ]
+ * Starting chronyd ...
+ [ ok ]
+
+ APK Mirror
+------------
+wget: bad address 'mirrors.alpinelinux.org'
+wget: bad address 'mirrors.alpinelinux.org'
+ (f)    Find and use fastest mirror
+ (s)    Show mirrorlist
+ (r)    Use random mirror
+ (e)    Edit /etc/apk/repositories with text editor
+ (c)    Community repo enable
+ (skip) Skip setting up apk repositories
+
+(AT THIS POINT THERE'S MOST LIKELY SOMETHING SILLY IN /etc/resolv.conf.
+ FOR A QUICK FIX, USE 8.8.8.8.)
+
+Enter mirror number or URL: [1] !
+Type 'exit' to return to setup.
+# echo 'nameserver 8.8.8.8' >/etc/resolv.conf
+Enter mirror number or URL: [1]
+
+ (f)    Find and use fastest mirror
+ (s)    Show mirrorlist
+ (r)    Use random mirror
+ (e)    Edit /etc/apk/repositories with text editor
+ (c)    Community repo enable
+ (skip) Skip setting up apk repositories
+
+Enter mirror number or URL: [1] f
+
+Finding fastest mirror...
+...
+Added mirror not.a.real.mirror
+Updating repository indexes... done.
+
+ User
+------
+Setup a user? (enter a lower-case loginname, or 'no') [no] jd
+Full name for user jd [jd] John Doe
+Changing password for jd
+New password:
+Bad password: too short
+Retype password:
+passwd: password for jd changed by root
+Enter ssh key or URL for jd (or 'none') [none]
+(1/1) Installing doas (6.8.2-r7)
+Executing busybox-1.36.1-r29.trigger
+OK: 18 MiB in 37 packages
+Which ssh server? ('openssh', 'dropbear' or 'none') [openssh]
+ * service sshd added to runlevel default
+ * Caching service dependencies ...
+ [ ok ]
+ssh-keygen: generating new host keys: RSA ECDSA ED25519
+ * Starting sshd ...
+ [ ok ]
+
+ Disk & Install
+----------------
+Available disks are:
+  vda   (21.5 GB 0x0b5d )
+
+Which disk(s) would you like to use? (or '?' for help or 'none') [none] vda
+
+The following disk is selected:
+  vda   (21.5 GB 0x0b5d )
+
+How would you like to use it? ('sys', 'data', 'crypt', 'lvm' or '?' for help) [?] ?
+
+You can select between 'sys', 'data', 'crypt', 'cryptsys', 'lvm', 'lvmsys'
+or 'lvmdata'.
+
+sys:
+  This mode is a traditional disk install. The following partitions will be
+  created on the disk: /boot, / (filesystem root) and swap.
+
+  This mode may be used for development boxes, desktops, virtual servers, etc.
+
+data:
+  This mode uses your disk(s) for data storage, not for the operating system.
+  The system itself will run from tmpfs (RAM).
+
+  Use this mode if you only want to use the disk(s) for a mailspool, databases,
+  logs, etc.
+
+crypt:
+  Enable encryption with cryptsetup and ask again for 'sys' or 'data'.
+  You will be prompted to enter a decryption password, and will need to
+  use this password to boot up the operating system after installation.
+
+cryptsys:
+  Same as 'sys' but also enable encryption.
+
+lvm:
+  Enable logical volume manager and ask again for 'sys' or 'data'.
+
+lvmsys:
+  Same as 'sys' but use logical volume manager for partitioning.
+
+lvmdata:
+  Same as 'data' but use logical volume manager for partitioning.
+
+
+The following disk is selected:
+  vda   (21.5 GB 0x0b5d )
+
+How would you like to use it? ('sys', 'data', 'crypt', 'lvm' or '?' for help) [?] sys
+
+WARNING: The following disk(s) will be erased:
+  vda   (21.5 GB 0x0b5d )
+
+WARNING: Erase the above disk(s) and continue? (y/n) [n] y
+Creating file systems...
+Installing system on /dev/vda3:
+/mnt/boot is device /dev/vda1
+==> initramfs: creating /boot/initramfs-virt for 6.6.41-0-virt
+/boot is device /dev/vda1
+
+Installation is complete. Please reboot.
+alpine:~# poweroff
+
+(IT MAY BE NECESSARY TO USE '~.'.)
+
+
+BACK ON OPENBSD
+
+First check that the VM has stopped correctly:
+
+$ vmctl status
+   ID   PID VCPUS  MAXMEM  CURMEM     TTY        OWNER    STATE NAME
+
+And start without the CD-ROM:
+
+# vmctl start -cL -d alpine.qcow2 -m 1G alpine
+
+Network should work. From alpine try 'ping 8.8.8.8',
+'ping google.com' and 'ip a'. From OpenBSD try pinging whatever 'ip a'
+shows (should be 100.64.X.X). If that works, you should be able to
+'ssh jd@$IP'.

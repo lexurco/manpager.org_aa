@@ -73,3 +73,9 @@ Entry: 2024-06-25
 
 New article (a bit of a short one this time):
 art/016.notes_on_dot-forward.txt
+
+
+entry: 2024-07-22
+
+Wrote a quick little article on installing Alpine Linux under
+OpenBSD VMM: art/017.how_to_install_alpine_on_vmm.txt
