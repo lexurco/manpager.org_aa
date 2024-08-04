@@ -1,0 +1,10 @@
+comment is a preprocessor, that lets you strip comments from input. It
+supports both block and single-line comments. Useful for languages that
+don't support comments on their own.
+
+You can download one of the releases at [0], clone the git repository
+via [1], or browse it at [2].
+
+[0] {ftp,rsync,https}://manpager.org/pub/usr/aa/comment/
+[1] ssh://anon@git.manpager.org/comment
+[2] https://git.manpager.org/?action=summary&path=comment.git
