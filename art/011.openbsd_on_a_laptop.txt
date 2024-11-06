@@ -48,8 +48,9 @@ partition scheme that I made was adding a 1GB /hole partition after
 010.x11_isolation_2.txt).
 
 Setting up the second drive with FDE, and automatic mounting is a bit
-more complicated. It has to be done with rc.local or rc.securelevel and
-rc.shutdown (see rc(8)).
+more complicated. It has to be done with rc.local or rc.securelevel.
+(See rc(8).) If you really want to, you may also unmount it "manually"
+via rc.shutdown.
 
 Having a second disk also allowed me to setup /altroot (see daily(8)).
 Since I am backing up stuff on the first drive to the second one, I
@@ -76,6 +77,7 @@ My rc scripts look like this:
   	for f in $FS; do fsck -p $f && mount -s $f; done
   }
   
+  # Not really necessary
   umount_second() {
   	for f in $FS; do umount -f $f; done
   	bioctl -d $DUID2
@@ -94,7 +96,7 @@ My rc scripts look like this:
   set_perms_speaker
   echo " done!"
 
-  /etc/rc.shutdown:
+  /etc/rc.shutdown (if you really want to):
   #!/bin/ksh
   
   . /etc/rc.local.subr
