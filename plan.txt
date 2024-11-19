@@ -11,6 +11,11 @@ At last, focusing on libre software development.
 
 
 News:
+Entry: 2024-11-19
+
+gpass 0.6 and gpm 0.3 released.
+
+
 Entry: 2024-02-26
 
 A couple of new additions:
