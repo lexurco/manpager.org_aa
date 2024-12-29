@@ -11,11 +11,6 @@ At last, focusing on libre software development.
 
 
 News:
-Entry: 2024-11-19
-
-gpass 0.6 and gpm 0.3 released.
-
-
 Entry: 2024-02-26
 
 A couple of new additions:
@@ -77,3 +72,13 @@ entry: 2024-07-22
 
 Wrote a quick little article on installing Alpine Linux under
 OpenBSD VMM: art/017.how_to_install_alpine_on_vmm.txt
+
+
+Entry: 2024-11-19
+
+gpass 0.6 and gpm 0.3 released.
+
+
+Entry: 2024-12-29
+
+Wayland on OpenBSD (2024): art/018.wayland_on_openbsd_2024.txt

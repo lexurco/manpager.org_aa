@@ -1,0 +1,39 @@
+Title: Wayland on OpenBSD (2024)
+Author: Alexander Arkhipov <aa@manpager.org>
+Created: 2024-12-29
+Modified: 2024-12-29
+
+Since recently, OpenBSD can run wayland. However, this is not very well
+documented or advertised, and it's all in ports. So, this is just a
+quick introduction.
+
+
+INSTALLING AND RUNNING
+
+First, *very importantly*, kill any running X server:
+
+	# rcctl stop xenodm
+
+I emphasise the importance here because if you don't you might very well
+lock your computer and have to reboot by pressing the power button.
+
+Now, install a compositor. Several are in ports. We'll be using sway:
+
+	# pkg_add sway
+
+Run with /usr/local/bin/startsway.sh. Unless you are running sway as
+root (don't), it's is almost guaranteed to complain about being unable
+to open some device files. If you are in the group wheel, the following
+should more than suffice (but feel free to experiment.)
+
+	# chmod g+rw /dev/dri/* /dev/wskbd* /dev/wsmouse*
+	$ startsway.sh
+
+
+WHAT WORKS
+
+Xwayland is enabled by default, so you should be able to run most
+software. There's some software made specifically for wayland available,
+like the terminal emulator foot. Unfortunately, it seems on OpenBSD,
+Firefox still works poorly under wayland, while chromium doesn't even
+start.
