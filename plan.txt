@@ -1,84 +1,11 @@
 Now:
-2024-10-17
+2025-01-09
 
-Having finally *e*mmigrated, trying to figure out *i*mmigration. At this
-point I really don't know where it'll go, get back to me in 2030.
-
-Trying to put some of my skills to where the money is at. So far, so
-good.
-
-At last, focusing on libre software development.
+Love Georgia. Staying here for the next year too.
 
 
 News:
-Entry: 2024-02-26
+Entry: 2025-01-09
 
-A couple of new additions:
-
-1. art/012.backups_on_unix.txt
-2. thoughts/240226.after_a_month_in_georgia.txt
-
-
-Entry: 2024-03-08
-
-Wanted to write an article on using locales and wchar_t in C, but ended
-up writing two:
-
-1. https://manpager.org/usr/aa/art/013.from_ascii_to_unicode.txt
-   gopher://manpager.org/0/usr/aa/art/013.from_ascii_to_unicode.txt
-   gemini://manpager.org/usr/aa/art/013.from_ascii_to_unicode.txt
-2. https://manpager.org/usr/aa/art/014.locales_in_c.txt
-   gopher://manpager.org/0/usr/aa/art/014.locales_in_c.txt
-   gemini://manpager.org/usr/aa/art/014.locales_in_c.txt
-
-
-Entry: 2024-04-27   
-
-- wrote an about.txt (root directory of the web/gopher/gemini site)
-- archived previous year's ~/.plan entries (still can be viewed via
-  the web/gopher/gemini)
-- added thoughts/240427.my_new_habits.txt
-
-
-Entry: 2024-05-05
-
-I wrote a new article in thoughts/240505.youth_sucks.txt, called
-"Youth sucks (but adulthood and beyond don't have to)". It's pretty
-short and to the point, as usual, but it is something I wanted to write
-about for a long time. Enjoy!
-
-
-Entry: 2024-06-07
-
-Hello, friends. Something very tragic has happened recently. I don't
-know if I'll manage to keep the site updated, but I will try, since it
-seems to help a bit.
-
-I added a new article in art/015.cron_tricks.txt
-
-
-Entry: 2024-06-18
-
-Made a mastodon (@aa@bsd.cafe)
-
-
-Entry: 2024-06-25
-
-New article (a bit of a short one this time):
-art/016.notes_on_dot-forward.txt
-
-
-entry: 2024-07-22
-
-Wrote a quick little article on installing Alpine Linux under
-OpenBSD VMM: art/017.how_to_install_alpine_on_vmm.txt
-
-
-Entry: 2024-11-19
-
-gpass 0.6 and gpm 0.3 released.
-
-
-Entry: 2024-12-29
-
-Wayland on OpenBSD (2024): art/018.wayland_on_openbsd_2024.txt
+Install NixOS with ZFS and encrypted /home:
+art/019.install_nixos+zfs+encrypted_home.txt
