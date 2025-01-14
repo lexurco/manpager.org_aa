@@ -9,3 +9,9 @@ Entry: 2025-01-09
 
 Install NixOS with ZFS and encrypted /home:
 art/019.install_nixos+zfs+encrypted_home.txt
+
+
+Entry: 2025-01-14
+
+Dockerising GUI applications:
+art/20.dockerising_gui_applications.txt

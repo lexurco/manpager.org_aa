@@ -1,0 +1,123 @@
+Title: Dockerising GUI applications
+Author: Alexander Arkhipov <aa@manpager.org>
+Created: 2025-01-14
+Modified: 2025-01-14
+
+DISCLAMER
+
+I don't actually like docker. It was a hard technical requirement of
+mine isolate some wayland/X11 programs on Linux, but there are better
+ways to do it. I only did it with docker for educational purposes.
+
+
+COMMANDS AND CONFIGS
+
+$ tail -n +1 Dockerfile rc.docker compose.yaml
+==> Dockerfile <==
+FROM alpine:3.21
+# pipewire-tools is not strictly necessary, but useful for debugging
+RUN apk update && apk add \
+    shadow \
+    firefox \
+    chromium \
+    xdg-desktop-portal \
+    xdg-desktop-portal-wlr \
+    dbus \
+    pipewire-tools
+RUN mkdir -p /run/user/rundir && chmod 000 /run/user/rundir
+RUN mkdir -p /home/homedir && chmod 000 /home/homedir
+CMD [ "sh", "/etc/rc.docker" ]
+
+==> rc.docker <==
+[ $$ != 1 ]; then
+	echo "Must run as PID 1" >&2
+	exit 1
+fi
+
+useradd ${DOCKER_USER_UID:+-u $DOCKER_USER_UID} \
+    ${DOCKER_USER_GID:+-g $DOCKER_USER_GID} \
+    ${DOCKER_USER_GROUPS+-G $DOCKER_USER_GROUPS} \
+    ${DOCKER_USER_GECOS:+-c "$DOCKER_USER_GECOS"} \
+    -d /home/homedir $DOCKER_USER
+
+uid=${DOCKER_USER_UID:-$(id -u $DOCKER_USER)}
+gid=${DOCKER_USER_GID:-$(id -g $DOCKER_USER)}
+chown $uid:$gid /run/user/rundir && chmod 700 /run/user/rundir
+
+echo "rc.docker done"
+exec su $user -c dbus-monitor	# Or just tail -f /dev/null
+
+==> compose.yaml <==
+services:
+  web:
+    build: .
+    hostname: mysillyhost
+    volumes:
+      # user home directory
+      - ./homedir:/home/homedir
+      # wayland socket
+      - ${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY}:/run/user/rundir/${WAYLAND_DISPLAY}
+      - ${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY}.lock:/run/user/rundir/${WAYLAND_DISPLAY}.lock
+      # x11 sockets
+      # also possible to pass specific one, e.g., /tmp/.X11-unix/X0
+      # - /tmp/.X11-unix:/tmp/.X11-unix
+      # XXX dbus and pipewire may use different paths on your system
+      # dbus
+      - ${XDG_RUNTIME_DIR}/bus:/run/user/rundir/bus
+      - ${XDG_RUNTIME_DIR}/dbus-1:/run/user/rundir/dbus-1
+      # pipewire
+      - ${XDG_RUNTIME_DIR}/pipewire-0:/run/user/rundir/pipewire-0
+      - ${XDG_RUNTIME_DIR}/pipewire-0.lock:/run/user/rundir/pipewire-0.lock
+      - ${XDG_RUNTIME_DIR}/pipewire-0-manager:/run/user/rundir/pipewire-0-manager
+      - ${XDG_RUNTIME_DIR}/pipewire-0-manager.lock:/run/user/rundir/pipewire-0-manager.lock
+      - ${XDG_RUNTIME_DIR}/pulse:/run/user/rundir/pulse
+      - /usr/share/pipewire:/usr/share/pipewire:ro
+      # webcam
+      # devices:
+      # - /dev/video0:/dev/video0
+    environment:
+      # change these to match your wayland/X11-running user
+      - DOCKER_USER=jdoe
+      - DOCKER_USER_UID=1000
+      - DOCKER_USER_GID=1000
+      # - DOCKER_USER_GROUPS=video,audio
+      - DOCKER_USER_GECOS=John Doe
+      # wayland
+      - WAYLAND_DISPLAY
+      - XDG_RUNTIME_DIR=/run/user/rundir
+      # x11
+      # - DISPLAY
+      # dbus
+      - DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/rundir/bus
+      # Depending on your system, you may need to pass more vars. Check
+      # relevant documentation and printenv output.
+
+$ mkdir homedir
+$ docker-compose up -d
+$ docker-compose exec -it -u $(id -u):$(id -g) -w /home/homedir web firefox
+
+
+CAVEATS
+
+The above compose file is made primarily for the use with wayland. With
+only X, it should all be much simpler: Pass DISPLAY; if you want audio,
+pass pipewire and pulse; if you want webcam, pass /dev/video*. Also, it
+presupposes that you have XDG_RUNTIME_DIR set, and the relevant sockets
+live there. Finally, on NixOS and similar you'll have to figure out
+where the default pipewire configs live instead of /usr/share/pipewire
+(probably $(dirname $(realpath `which pipewire`))/../share/pipewire).
+
+
+DEBUGGING
+
+First, make sure firefox/chromium/whatever works properly on the host
+system. If it doesn't, it may be something with wayland, dbus, pipewire,
+xdg-desktop-portal, or something more esoteric.
+
+If it does, something's probably missing from the container. That's why
+we install dbus and pipewire-tools in the container -- very useful for
+debugging.
+
+To test if screen sharing, webcam, mic, etc. work in firefox/chromium, go
+It should actually work. Go to https://mozilla.github.io/webrtc-landing/
+and try running demos there. 
