@@ -107,6 +107,10 @@ live there. Finally, on NixOS and similar you'll have to figure out
 where the default pipewire configs live instead of /usr/share/pipewire
 (probably $(dirname $(realpath `which pipewire`))/../share/pipewire).
 
+Also, note, that this is actually a pretty bad way of running firfox and
+chromium since both need to use namespaces for sandboxing. I don't think
+you can even run chromium like this without --no-sandbox.
+
 
 DEBUGGING
 
