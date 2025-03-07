@@ -15,3 +15,9 @@ Entry: 2025-01-14
 
 Dockerising GUI applications:
 art/20.dockerising_gui_applications.txt
+
+
+Entry: 2025-03-07
+
+Install OpenBSD with encrypted /home:
+art/21.install_openbsd_with_encrypted_home.txt

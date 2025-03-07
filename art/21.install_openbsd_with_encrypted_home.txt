@@ -1,0 +1,183 @@
+INSTALL OPENBSD WITH ENCRYPTED /HOME
+
+Boring intro
+
+I've been primarily using an OpenBSD laptop with FDE (full disk
+encryption) for more than a year now. There were a couple of issues with
+this:
+
+1. It's very inconvenient: the OpenBSD boot program (which does the
+   decryption) doesn't know what us.dvorak is, and I have to enter my
+   password twice during the upgrade, and once more to log in.
+2. It's not even that useful, to be honest. It's great to have my /home
+   and backups encrypted, but encrypting /etc, etc. (pun intended) is
+   not very meaningful for me.
+
+So, why not just encrypt the /home partition, and use a dedicated
+encrypting backup utility? The second part is no problem (I use borg
+now), but the first required a reinstall, and since I didn't have any
+other hardware I could use for work, I couldn't afford to potentially
+incapacitate my laptop for an extended period of time.
+
+Well, now I have a second laptop set up! With Arch Linux, and only used
+for work! So, finally I can do the reinstall.
+
+
+  1. Install normally, log in as root.
+
+My disklabel after installation for reference
+
+# disklabel -h sd1
+type: SCSI
+disk: SCSI disk
+label: TS500GMTS425S   
+duid: c6a30ae0b8196b16
+flags:
+bytes/sector: 512
+sectors/track: 63
+tracks/cylinder: 255
+sectors/cylinder: 16065
+cylinders: 60801
+total sectors: 976773168 # total bytes: 476940.0M
+boundstart: 532544
+boundend: 976773135
+
+16 partitions:
+#                size           offset  fstype [fsize bsize   cpg]
+  a:          1024.0M           532544  4.2BSD   2048 16384 12960 # /
+  b:         16504.3M          2629696    swap                    # none
+  c:        476940.0M                0  unused                    
+  d:          4096.0M         36430560  4.2BSD   2048 16384 12960 # /tmp
+  e:         36592.7M         44819168  4.2BSD   2048 16384 12960 # /var
+  f:         30720.0M        119760928  4.2BSD   2048 16384 12960 # /usr
+  g:          1024.0M        182675488  4.2BSD   2048 16384 12960 # /usr/X11R6
+  h:         20480.0M        184772640  4.2BSD   2048 16384 12960 # /usr/local
+  i:           260.0M               64   MSDOS                    
+  j:          5120.0M        226715680  4.2BSD   2048 16384 12960 # /usr/src
+  k:          6144.0M        237201440  4.2BSD   2048 16384 12960 # /usr/obj
+  l:        307200.0M        249784384  4.2BSD   4096 32768 26062 # /home
+
+  2. Unmount /home and make sure it stays unmounted
+
+# umount /home
+# vi /etc/fstab  # comment out the /home entry
+# cat /etc/fstab # it'll look something like this
+c6a30ae0b8196b16.b none swap sw
+c6a30ae0b8196b16.a / ffs rw 1 1
+# c6a30ae0b8196b16.l /home ffs rw,nodev,nosuid 1 2
+c6a30ae0b8196b16.d /tmp ffs rw,nodev,nosuid 1 2
+c6a30ae0b8196b16.f /usr ffs rw,nodev 1 2
+c6a30ae0b8196b16.g /usr/X11R6 ffs rw,nodev 1 2
+c6a30ae0b8196b16.h /usr/local ffs rw,wxallowed,nodev 1 2
+c6a30ae0b8196b16.k /usr/obj ffs rw,nodev,nosuid 1 2
+c6a30ae0b8196b16.j /usr/src ffs rw,nodev,nosuid 1 2
+c6a30ae0b8196b16.e /var ffs rw,nodev,nosuid 1 2
+
+  3. Create the encrypted volume
+
+First, change your home partition filesystem type (sd1l in my case,
+probably something else in yours) to RAID:
+
+# disklabel -E sd1
+Label editor (enter '?' for help at any prompt)
+sd1> m l
+offset: [249784384]
+size: [629145536]
+FS type: [4.2BSD] RAID
+sd1*> w
+sd1> q
+No label changes.
+
+Overriding it with random data may take a lot of time, and it's not
+completely necessary, so you make skip that.
+
+# dd if=/dev/urandom of=/dev/rsd1l bs=1m
+
+Finally, create an encrypted volume on sd1l, and an a partition of
+FS type 4.2BSD on the new pseudo-device. (The process is the same as
+described in the [FAQ].):
+
+# bioctl -c C -l sd1l softraid0
+New passphrase: 
+Re-type passphrase: 
+softraid0: CRYPTO volume attached as sd2
+# dd if=/dev/zero of=/dev/rsd2c bs=1m count=1
+# fdisk -iy sd2
+# disklabel -E sd2 # add an 'a' partition of type 4.2BSD
+# newfs sd2a
+
+  4. Auto mount the new /home at boot
+
+First create an fstab entry. Make sure to specify noauto and no fsck:
+
+# disklabel sd2 | grep duid
+duid: b14f0a3a4fcd9091
+# echo 'b14f0a3a4fcd9091.a /home ffs rw,nodev,nosuid,noauto 1 0' >>/etc/fstab
+
+And put the mounting script into /etc/rc.local:
+
+# disklabel sd1 | grep duid
+duid: c6a30ae0b8196b16
+# cat >/etc/rc.local <<EOF
+while ! bioctl -c C -l c6a30ae0b8196b16.l softraid0; sleep 1; done
+fsck -p b14f0a3a4fcd9091.a
+mount -s /home
+EOF
+
+  5. Fix sysupgrade and repopulate /home
+
+First, mount the /home partition to a directory *other than /home*.
+/mnt here:
+
+# mount /dev/sd2a /mnt
+
+Now, create directory /var/_sysupgrade, and symlinks from
+/home/_sysupgrade:
+
+# mkdir /var/_sysupgrade
+# ln -s ../var/_sysupgrade /home/_sysupgrade
+# ln -s ../var/_sysupgrade /mnt/_sysupgrade
+# chmod 700 /{var,home,mnt}/_sysupgrade
+
+We need to do this because OpenBSD will not mount your /home partition
+when upgrading. (It can't, it doesn't know the password, and it won't
+because it's noauto.) That's also why symlinks need to exist both in the
+root partition /home directory, and on the /home partition. You can also
+just run 'sysupgrade -b /var' every time, but that's less convenient.
+
+It's very important to use relative paths (../var/_sysupgrade) and not
+absolute (/var/_sysupgrade), at least for the root partition, because
+it will be mounted on /mnt during the upgrade.
+
+Populating /home goes pretty much as you'd expect. Though, it's also
+important to create a home directory for your user on the root
+partition. Otherwise if you use autologin with xenodm and fail to mount
+the encrypted volume for some reason, xenodm will freak out and you'll
+have to reboot, and maybe fix that in single-user mode. You don't want
+to deal with that.
+
+Assuming your login name is 'myuser':
+
+# cp -r /etc/skel /mnt/myuser
+# mkdir /home/myuser
+# chown -R myuser:myuser /{home,mnt}/myuser
+# umount /mnt && mount /home
+
+  6. X autologin
+
+We'll be entering the password to our encrypted volume on every boot.
+So, assuming single (human) user machine, it doesn't make much sense
+to enter a password again at the login prompt. You can configure xenodm
+to automatically log you into the user myuser like so:
+
+# echo 'DisplayManager._0.autoLogin: myuser' >>/etc/X11R6/xenodm/xenodm-config
+
+  7. Reboot
+
+Not completely necessary (you could just unmount /mnt, and remount
+/home), but it's a good idea to make sure everything works.
+
+# reboot
+
+
+[FAQ] https://www.openbsd.org/faq/faq14.html
