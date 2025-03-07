@@ -1,6 +1,6 @@
 INSTALL OPENBSD WITH ENCRYPTED /HOME
 
-Boring intro
+  Boring intro
 
 I've been primarily using an OpenBSD laptop with FDE (full disk
 encryption) for more than a year now. There were a couple of issues with
@@ -23,7 +23,9 @@ Well, now I have a second laptop set up! With Arch Linux, and only used
 for work! So, finally I can do the reinstall.
 
 
-  1. Install normally, log in as root.
+  Actual installation
+
+    1. Install normally, log in as root.
 
 My disklabel after installation for reference
 
@@ -73,7 +75,7 @@ c6a30ae0b8196b16.k /usr/obj ffs rw,nodev,nosuid 1 2
 c6a30ae0b8196b16.j /usr/src ffs rw,nodev,nosuid 1 2
 c6a30ae0b8196b16.e /var ffs rw,nodev,nosuid 1 2
 
-  3. Create the encrypted volume
+    3. Create the encrypted volume
 
 First, change your home partition filesystem type (sd1l in my case,
 probably something else in yours) to RAID:
@@ -89,7 +91,7 @@ sd1> q
 No label changes.
 
 Overriding it with random data may take a lot of time, and it's not
-completely necessary, so you make skip that.
+completely necessary, so you may skip that.
 
 # dd if=/dev/urandom of=/dev/rsd1l bs=1m
 
@@ -106,7 +108,7 @@ softraid0: CRYPTO volume attached as sd2
 # disklabel -E sd2 # add an 'a' partition of type 4.2BSD
 # newfs sd2a
 
-  4. Auto mount the new /home at boot
+    4. Auto mount the new /home at boot
 
 First create an fstab entry. Make sure to specify noauto and no fsck:
 
@@ -124,7 +126,7 @@ fsck -p b14f0a3a4fcd9091.a
 mount -s /home
 EOF
 
-  5. Fix sysupgrade and repopulate /home
+    5. Fix sysupgrade and repopulate /home
 
 First, mount the /home partition to a directory *other than /home*.
 /mnt here:
@@ -140,10 +142,11 @@ Now, create directory /var/_sysupgrade, and symlinks from
 # chmod 700 /{var,home,mnt}/_sysupgrade
 
 We need to do this because OpenBSD will not mount your /home partition
-when upgrading. (It can't, it doesn't know the password, and it won't
-because it's noauto.) That's also why symlinks need to exist both in the
-root partition /home directory, and on the /home partition. You can also
-just run 'sysupgrade -b /var' every time, but that's less convenient.
+when upgrading. (It can't because it doesn't know the password,
+and it won't because it's noauto.) That's also why symlinks need to
+exist both in the root partition /home directory, and on the /home
+partition. You can also just run 'sysupgrade -b /var' every time, but
+that's less convenient.
 
 It's very important to use relative paths (../var/_sysupgrade) and not
 absolute (/var/_sysupgrade), at least for the root partition, because
@@ -163,7 +166,7 @@ Assuming your login name is 'myuser':
 # chown -R myuser:myuser /{home,mnt}/myuser
 # umount /mnt && mount /home
 
-  6. X autologin
+    6. X autologin
 
 We'll be entering the password to our encrypted volume on every boot.
 So, assuming single (human) user machine, it doesn't make much sense
@@ -172,7 +175,7 @@ to automatically log you into the user myuser like so:
 
 # echo 'DisplayManager._0.autoLogin: myuser' >>/etc/X11R6/xenodm/xenodm-config
 
-  7. Reboot
+    7. Reboot
 
 Not completely necessary (you could just unmount /mnt, and remount
 /home), but it's a good idea to make sure everything works.
