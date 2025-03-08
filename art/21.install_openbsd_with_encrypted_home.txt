@@ -1,4 +1,7 @@
-INSTALL OPENBSD WITH ENCRYPTED /HOME
+Title: Install OpenBSD with encrypted /home
+Author: Alexander Arkhipov <aa@manpager.org>
+Created: 2025-03-07
+Modified: 2025-03-08
 
   Boring intro
 
