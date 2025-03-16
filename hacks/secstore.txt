@@ -1,0 +1,8 @@
+secstore is a secret manager, formerly known as gpm.
+
+You can download one of the [releases], clone the git [repository], or
+[browse] it.
+
+[releases] https://manpager.org/pub/usr/aa/secstore/
+[repository] ssh://anon@git.manpager.org:secstore
+[browse] https://git.manpager.org/?action=summary&path=secstore.git

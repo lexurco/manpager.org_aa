@@ -5,5 +5,5 @@ interfaces, two of the language's important features. goget already
 supports downloading files in parallel, and I am planning to add support
 for as many protocols as possible.
 
-git clone ssh://anon@git.manpager.org/goget
+git clone ssh://anon@git.manpager.org:goget
 https://git.manpager.org/?action=summary&path=goget.git
